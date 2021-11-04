@@ -5,7 +5,7 @@ local home = vim.env.HOME
 -- One dedicated LSP server & client will be started per unique root_dir
 local project_root = jdtls_setup.find_root({'.git', 'mvnw', 'gradlew'})
 -- Points to where eclipse jdt ls is built
-local eclipse_build = home .. '/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository'
+local eclipse_build = home .. '/eclipse.jdt.ls'
 local eclipse_jar = eclipse_build .. '/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar'
 local eclipse_config = eclipse_build .. '/config_linux'
 local workspace_path = '/host/workspace/jdtls'
@@ -39,7 +39,7 @@ local jdtls_config = {
   -- Debug support through VSCode java debug plugin
   init_options = {
       bundles = {
-        home .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.33.0.jar",
+        vim.fn.glob(home .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"),
       },
   },
 }
