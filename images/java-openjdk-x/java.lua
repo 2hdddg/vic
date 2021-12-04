@@ -39,7 +39,7 @@ local jdtls_config = {
   -- Debug support through VSCode java debug plugin
   init_options = {
       bundles = {
-        vim.fn.glob(home .. "/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"),
+        vim.fn.glob(home .. "/eclipse_plugins/*.jar"),
       },
   },
 }

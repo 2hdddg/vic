@@ -18,27 +18,27 @@ let g:netrw_banner=0
 
 let mapleader = ";"
 
+" set shada='50,%,n/host/workspace/nvim.shada
+
 " jk is escape
 inoremap jk <esc>
-" Keystroke savers
-nnoremap <leader>n <cmd>nohl<cr> " No hightlight
-
-" The Silver Searcher
-" Use ag over grep
-" if executable('ag')
-"   set grepprg=ag\ --vimgrep\ $*
-"   set grepformat=%f:%l:%c:%m
-"   " bind K to grep word under cursor
-  " this binding only works with ag
-"   nnoremap K :silent! grep! <cword> <bar>cwindow<bar>redraw!<cr>
-" endif
 
 runtime plugs.vim
+runtime treesitter.vim
 
 set termguicolors
 colorscheme srcery
 
 lua <<EOF
+
+-- Syntax highlighting
+require'nvim-treesitter.configs'.setup {
+--  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,  -- false will disable the whole extension
+  },
+}
+
 -- Auto completion
 require'compe'.setup {
   enabled = true;
@@ -145,41 +145,26 @@ require'lualine'.setup {
   extensions = {}
 }
 
--- Syntax highlighting
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  highlight = {
-    enable = true,  -- false will disable the whole extension
-    disable = { },  -- list of language that will be disabled
-  },
-}
-
 -- Setup telescope fuzzy finder
 local telescope = require'telescope'
 local previewers = require'telescope.previewers'
 telescope.setup{
   defaults = {
-   vimgrep_arguments = {
-       'ag',
-       '--vimgrep',
-   },
-   initial_mode = 'normal',
-   sorting_strategy = 'descending',
-   layout_strategy = "vertical",
-   layout_config = {
-       mirror = true,
-   },
-  }
+    vimgrep_arguments = { 'ag', '--vimgrep' },
+  },
+  pickers = {},
 }
 EOF
 
 
-" Setup fuzzy finding
-nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files({ initial_mode = 'insert' })<cr>
+" Leader keys
+nnoremap <leader>n <cmd>nohl<cr> " No hightlight
+nnoremap <leader>f <cmd>lua require('telescope.builtin').git_files()<cr> " Find file among git files
+nnoremap <leader>F <cmd>lua require('telescope.builtin').file_browser()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
-nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<cr>
-" Grep under cursor
-nnoremap K <cmd>lua require('telescope.builtin').grep_string()<CR>
+nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
+nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
+nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
 
 autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({ focusable = false })
 " autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
@@ -187,21 +172,17 @@ set updatetime=300 " CursorHold trigger time (and write to swap)
 
 " LSP
 " Map all standard LSP commands to ,X
-" noremap ,d <cmd>lua vim.lsp.buf.definition()<CR>
-noremap ,d <cmd>lua require('telescope.builtin.lsp').definitions({shorten_path = false})<CR>
-noremap ,c <cmd>lua vim.lsp.buf.incoming_calls()<CR>
-"noremap ,r <cmd>lua vim.lsp.buf.references()<CR>
-noremap ,r <cmd>lua require('telescope.builtin.lsp').references({shorten_path = false})<CR>
-noremap ,D <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<CR>
-noremap ,i <cmd>lua require('telescope.builtin.lsp').implementations({shorten_path = false})<CR>
-" noremap ,i <cmd>lua vim.lsp.buf.implementation()<CR>
-noremap ,h <cmd>lua vim.lsp.buf.hover()<CR>
-noremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap ,a <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
+nnoremap ,d <cmd>lua require('telescope.builtin.lsp').definitions({shorten_path = false})<CR>
+nnoremap ,r <cmd>lua require('telescope.builtin.lsp').references({shorten_path = false})<CR>
+nnoremap ,D <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<CR>
+nnoremap ,W <cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<CR>
+nnoremap ,i <cmd>lua require('telescope.builtin.lsp').implementations({shorten_path = false})<CR>
+nnoremap ,h <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
 " Standard LSP stuff but specific for jdtls plugin
 "noremap ,a <Cmd>lua require('jdtls').code_action()<CR>
 " noremap ,f <Cmd>lua require('jdtls').code_action(false, 'refactor')<CR>
-
 
 " DAP debugging
 command! Dbr lua require('dap').toggle_breakpoint()
@@ -212,25 +193,6 @@ command! Drepl lua require('dap').repl.open()
 command! Dstart lua require('dap').continue()
 command! Dclass lua require('jdtls').test_class()
 command! Dtest lua require('jdtls').test_nearest_method()
-
-" lua <<EOF
-" require'lspconfig'.gopls.setup{}
-" EOF
-
-" Go
-" autocmd FileType go setlocal noexpandtab
-" autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)
-
-" Python
-" lua <<EOF
-" require'lspconfig'.pyls.setup{}
-" EOF
-
-" augroup jdtls_lsp
-"     autocmd!
-    " Java
-"     autocmd FileType java lua require'my_jdtls_setup'.setup()
-" augroup end
 
 " Otherwise substitution doesn't work multiple times per line
 set nogdefault
