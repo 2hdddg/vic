@@ -159,7 +159,7 @@ EOF
 
 " Leader keys
 nnoremap <leader>n <cmd>nohl<cr> " No hightlight
-nnoremap <leader>f <cmd>lua require('telescope.builtin').git_files()<cr> " Find file among git files
+nnoremap <leader>f <cmd>lua require('telescope.builtin').git_files()<cr>
 nnoremap <leader>F <cmd>lua require('telescope.builtin').file_browser()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
@@ -169,6 +169,10 @@ nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
 autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({ focusable = false })
 " autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 set updatetime=300 " CursorHold trigger time (and write to swap)
+
+" Terminal
+tnoremap jk  <C-\><C-n>
+set shell=/bin/bash
 
 " LSP
 " Map all standard LSP commands to ,X

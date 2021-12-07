@@ -38,9 +38,23 @@ local jdtls_config = {
   on_attach = on_attach,
   -- Debug support through VSCode java debug plugin
   init_options = {
-      bundles = {
-        vim.fn.glob(home .. "/eclipse_plugins/*.jar"),
+    bundles = {
+      vim.fn.glob(home .. "/eclipse_plugins/*.jar"),
+    },
+    settings = {
+      java = {
+        autobuild = { enabled = true },
+        signatureHelp = { enabled = true },
+        contentProvider = { preferred = 'fernflower' },
+        import = {
+          gradle = { enabled = false },
+        },
+        format = { enabled = true },
       },
+      eclipse = {
+        downloadSources = { enabled = true },
+      },
+    },
   },
 }
 jdtls.start_or_attach(jdtls_config)
