@@ -28,6 +28,9 @@ COPY settings.xml $HOME/.m2/
 RUN mkdir $HOME/eclipse_plugins
 COPY com.microsoft.java.debug.plugin-0.34.0.jar $HOME/eclipse_plugins/
 
+WORKDIR /host/code
+CMD nvim .
+
 # docker build . -t vic-java-openjdk-11:stable --build-arg javaversion=11
 # docker run --name xx --rm -it --mount type=bind,source=/home/peter/code/neo-technology/neo4j-4.x,destination=/host/code --mount type=bind,source=/home/peter/temp_ws,destination=/host/workspace vic-java-openjdk-11:stable /bin/bash
 
