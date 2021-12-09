@@ -5,11 +5,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	"path"
 	"strings"
+	"syscall"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/mount"
+	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
 	"golang.org/x/term"
 	"gopkg.in/yaml.v2"
@@ -47,6 +51,7 @@ type Config struct {
 	Filters map[string]RootConfig
 }
 
+/*
 func (c Config) getTag(image string) (string, error) {
 	for configuredImage, imageConfig := range c.Images {
 		if configuredImage == image {
@@ -55,18 +60,56 @@ func (c Config) getTag(image string) (string, error) {
 	}
 	return "", fmt.Errorf("No configuration for image: %s", image)
 }
+*/
 
-func (c Config) getContainerConfig(root string) (cc container.Config, err error) {
+func (c Config) configure(containerConfig *container.Config, hostConfig *container.HostConfig, rootPath string, rootConfig RootConfig) error {
+	imageConfig, found := c.Images[rootConfig.Image]
+	if !found {
+		return fmt.Errorf("No configuration for image: %s", rootConfig.Image)
+	}
+	containerConfig.Image = fmt.Sprintf("vic-%s:%s", rootConfig.Image, imageConfig.Tag)
+	containerConfig.WorkingDir = "/host/code"
+	containerConfig.Cmd = strslice.StrSlice([]string{"nvim", "."})
+	hostConfig.Mounts = []mount.Mount{
+		{Type: "bind", Source: rootPath, Target: "/host/code"},
+		{Type: "bind", Source: c.data(rootConfig, rootPath), Target: "/host/data"},
+		{Type: "bind", Source: c.workspace(rootConfig, rootPath), Target: "/host/workspace"},
+	}
+
+	return nil
+}
+
+func (c Config) workspace(rootConfig RootConfig, rootPath string) string {
+	if rootConfig.Workspace != "" {
+		return pathRelativeToRoot(rootConfig.Workspace, rootPath)
+	}
+	return pathRelativeToRoot(c.Default.Workspace, rootPath)
+}
+
+func (c Config) data(rootConfig RootConfig, rootPath string) string {
+	if rootConfig.Data != "" {
+		return pathRelativeToRoot(rootConfig.Data, rootPath)
+	}
+	return pathRelativeToRoot(c.Default.Data, rootPath)
+}
+
+func pathRelativeToRoot(apath, root string) string {
+	if path.IsAbs(apath) {
+		return apath
+	}
+	return path.Join(root, apath)
+}
+
+func (c Config) byPath(path string) (containerConfig container.Config, hostConfig container.HostConfig, err error) {
 	// Try to find a matching root
-	for configuredRoot, imageConfig := range c.Roots {
-		if strings.HasPrefix(root, configuredRoot) {
-			var tag string
-			tag, err = c.getTag(imageConfig.Image)
-			cc.Image = fmt.Sprintf("vic-%s:%s", imageConfig.Image, tag)
+	for name, rootConfig := range c.Roots {
+		if strings.HasPrefix(path, name) {
+			err = c.configure(&containerConfig, &hostConfig, name, rootConfig)
 			return
 		}
 	}
-	return cc, fmt.Errorf("No suitable image found for %s", root)
+	err = fmt.Errorf("No suitable image found for %s", path)
+	return
 }
 
 type ImageConfig struct {
@@ -74,11 +117,13 @@ type ImageConfig struct {
 }
 
 type RootConfig struct {
-	Image string
+	Image     string // Name of image
+	Workspace string // Path to workspace, if path is relative it is relative to the root
+	Data      string // Path to data
 }
 
 func main() {
-	config, err := getConfig()
+	configuration, err := getOrCreateConfiguration()
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +132,7 @@ func main() {
 		panic(err)
 	}
 	// Builds basic container configuration
-	containerConfig, err := config.getContainerConfig(wd)
+	containerConfig, hostConfig, err := configuration.byPath(wd)
 	if err != nil {
 		panic(err)
 	}
@@ -98,17 +143,14 @@ func main() {
 	containerConfig.AttachStdout = true
 	containerConfig.OpenStdin = true
 	containerConfig.StdinOnce = true
-	containerConfig.WorkingDir = "/host/code"
+	hostConfig.AutoRemove = true
 
 	containerName := buildContainerId(wd)
-	fmt.Printf("Will run or exec container '%s' configures as %+v\n", containerName, containerConfig)
 	cli, err := client.NewClientWithOpts()
 	if err != nil {
 		panic(err)
 	}
 
-	hostConfig := container.HostConfig{}
-	hostConfig.AutoRemove = true
 	createResponse, err := cli.ContainerCreate(context.Background(), &containerConfig, &hostConfig, nil, nil, containerName)
 	if err != nil {
 		panic(err)
@@ -145,14 +187,27 @@ func main() {
 		panic(err)
 	}
 
+	winchSignalCh := make(chan os.Signal, 1)
+	signal.Notify(winchSignalCh, syscall.SIGWINCH)
+
+	resize := func() {
+		width, height, _ := term.GetSize(fd)
+		cli.ContainerResize(context.Background(), containerId, types.ResizeOptions{Width: uint(width), Height: uint(height)})
+	}
+
 	statusCh, errCh := cli.ContainerWait(context.Background(), containerId, container.WaitConditionNotRunning)
-	select {
-	case err := <-errCh:
-		if err != nil {
-			panic(err)
+	resize()
+	for {
+		select {
+		case <-winchSignalCh:
+			resize()
+		case err := <-errCh:
+			if err != nil {
+				panic(err)
+			}
+		case _ = <-statusCh:
+			return
 		}
-	case status := <-statusCh:
-		fmt.Println(status)
 	}
 	/*
 
@@ -168,7 +223,7 @@ func buildContainerId(workingDirectory string) string {
 	return "vic_" + strings.ReplaceAll(workingDirectory, "/", "_")
 }
 
-func getConfig() (config Config, err error) {
+func getOrCreateConfiguration() (config Config, err error) {
 	var (
 		dirPath  string
 		filePath string
@@ -195,7 +250,7 @@ func getConfig() (config Config, err error) {
 		}
 		defer file.Close()
 		encoder := yaml.NewEncoder(file)
-		config = getDefaultConfig()
+		config = defaultConfiguration()
 		encoder.Encode(config)
 		return
 	}
@@ -205,7 +260,7 @@ func getConfig() (config Config, err error) {
 	return
 }
 
-func getDefaultConfig() Config {
+func defaultConfiguration() Config {
 	return Config{
 		Images: map[string]ImageConfig{
 			"java-openjdk-11": {Tag: "stable"},
