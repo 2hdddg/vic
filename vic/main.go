@@ -43,54 +43,71 @@ filters:
     image: java-openjdk-11
   - *.go:
     image: go-1.17
+verbose: true|false
 */
 type Config struct {
 	Images  map[string]ImageConfig
 	Roots   map[string]RootConfig
 	Default RootConfig
 	Filters map[string]RootConfig
+	Verbose bool
 }
-
-/*
-func (c Config) getTag(image string) (string, error) {
-	for configuredImage, imageConfig := range c.Images {
-		if configuredImage == image {
-			return imageConfig.Tag, nil
-		}
-	}
-	return "", fmt.Errorf("No configuration for image: %s", image)
-}
-*/
 
 func (c Config) configure(containerConfig *container.Config, hostConfig *container.HostConfig, rootPath string, rootConfig RootConfig) error {
 	imageConfig, found := c.Images[rootConfig.Image]
 	if !found {
 		return fmt.Errorf("No configuration for image: %s", rootConfig.Image)
 	}
+	workspacePath, err := c.workspace(rootConfig, rootPath)
+	if err != nil {
+		return err
+	}
 	containerConfig.Image = fmt.Sprintf("vic-%s:%s", rootConfig.Image, imageConfig.Tag)
 	containerConfig.WorkingDir = "/host/code"
 	containerConfig.Cmd = strslice.StrSlice([]string{"nvim", "."})
 	hostConfig.Mounts = []mount.Mount{
-		{Type: "bind", Source: rootPath, Target: "/host/code"},
-		{Type: "bind", Source: c.data(rootConfig, rootPath), Target: "/host/data"},
-		{Type: "bind", Source: c.workspace(rootConfig, rootPath), Target: "/host/workspace"},
+		{Type: "bind", Target: "/host/code", Source: rootPath},
+		{Type: "bind", Target: "/host/workspace", Source: workspacePath},
 	}
-
+	dataPath, err := c.data(rootConfig, rootPath)
+	if err != nil {
+		return err
+	}
+	if dataPath != "" {
+		dataMount := mount.Mount{Type: "bind", Target: "/host/data", Source: dataPath}
+		hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
+	}
 	return nil
 }
 
-func (c Config) workspace(rootConfig RootConfig, rootPath string) string {
+func (c Config) workspace(rootConfig RootConfig, rootPath string) (path string, err error) {
 	if rootConfig.Workspace != "" {
-		return pathRelativeToRoot(rootConfig.Workspace, rootPath)
+		path = rootConfig.Workspace
+	} else {
+		path = c.Default.Workspace
 	}
-	return pathRelativeToRoot(c.Default.Workspace, rootPath)
+	if path == "" {
+		err = fmt.Errorf("No workspace configured for: %s", rootPath)
+		return
+	}
+	path = pathRelativeToRoot(path, rootPath)
+	// Ensure that workspace directory exists
+	err = os.MkdirAll(path, os.ModePerm)
+	return
 }
 
-func (c Config) data(rootConfig RootConfig, rootPath string) string {
+func (c Config) data(rootConfig RootConfig, rootPath string) (path string, err error) {
 	if rootConfig.Data != "" {
-		return pathRelativeToRoot(rootConfig.Data, rootPath)
+		path = rootConfig.Data
+	} else {
+		path = c.Default.Data
 	}
-	return pathRelativeToRoot(c.Default.Data, rootPath)
+	// A missing data path is not an error
+	if path == "" {
+		return
+	}
+	path = pathRelativeToRoot(path, rootPath)
+	return
 }
 
 func pathRelativeToRoot(apath, root string) string {
@@ -132,9 +149,16 @@ func main() {
 		panic(err)
 	}
 	// Builds basic container configuration
+	containerName := buildContainerId(wd)
 	containerConfig, hostConfig, err := configuration.byPath(wd)
 	if err != nil {
 		panic(err)
+	}
+	if configuration.Verbose {
+		fmt.Printf("Starting container based on image %s with name %s:\n", containerConfig.Image, containerName)
+		for _, mount := range hostConfig.Mounts {
+			fmt.Printf("   %s -> %s\n", mount.Target, mount.Source)
+		}
 	}
 	// Add more specifics to the configuration
 	containerConfig.Tty = true
@@ -145,7 +169,6 @@ func main() {
 	containerConfig.StdinOnce = true
 	hostConfig.AutoRemove = true
 
-	containerName := buildContainerId(wd)
 	cli, err := client.NewClientWithOpts()
 	if err != nil {
 		panic(err)
@@ -179,7 +202,6 @@ func main() {
 		panic(err)
 	}
 	go io.Copy(os.Stdout, attachResponse.Reader)
-	//go io.Copy(os.Stderr, attachResponse.Reader)
 	go io.Copy(attachResponse.Conn, os.Stdin)
 
 	err = cli.ContainerStart(context.Background(), containerId, types.ContainerStartOptions{})
@@ -189,7 +211,6 @@ func main() {
 
 	winchSignalCh := make(chan os.Signal, 1)
 	signal.Notify(winchSignalCh, syscall.SIGWINCH)
-
 	resize := func() {
 		width, height, _ := term.GetSize(fd)
 		cli.ContainerResize(context.Background(), containerId, types.ResizeOptions{Width: uint(width), Height: uint(height)})
@@ -209,14 +230,6 @@ func main() {
 			return
 		}
 	}
-	/*
-
-		containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(containers)
-	*/
 }
 
 func buildContainerId(workingDirectory string) string {
