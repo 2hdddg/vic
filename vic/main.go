@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"os/signal"
+	"os/user"
 	"path"
 	"strings"
 	"syscall"
@@ -36,6 +37,11 @@ roots:
      image: java-openjdk-11
 default:
   image: nvim
+  verbose: true
+  gitconfig: /home/peter/.gitconfig
+  configs:
+    - git: /home/peter/.config/git
+
 filters:
   - *.java:
     image: java-openjdk-11
@@ -77,6 +83,31 @@ func (c Config) configure(containerConfig *container.Config, hostConfig *contain
 		dataMount := mount.Mount{Type: "bind", Target: "/host/data", Source: dataPath}
 		hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
 	}
+	gitConfigPath, err := c.gitconfig(rootConfig, rootPath)
+	if err != nil {
+		return err
+	}
+	userConfigs, err := c.userConfigs(rootConfig, rootPath)
+	if err != nil {
+		return err
+	}
+	// Mounts into user directory
+	if gitConfigPath != "" || len(userConfigs) > 0 {
+		user, err := user.Current()
+		if err != nil {
+			return err
+		}
+		// Home on container, not host
+		var homeDirectory = fmt.Sprintf("/home/%s/", user.Username)
+		if gitConfigPath != "" {
+			dataMount := mount.Mount{Type: "bind", Target: path.Join(homeDirectory, ".gitconfig"), Source: gitConfigPath}
+			hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
+		}
+		for name, configPath := range userConfigs {
+			dataMount := mount.Mount{Type: "bind", Target: path.Join(homeDirectory, ".config", name), Source: configPath}
+			hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
+		}
+	}
 	return nil
 }
 
@@ -110,6 +141,36 @@ func (c Config) data(rootConfig RootConfig, rootPath string) (path string, err e
 	return
 }
 
+func (c Config) gitconfig(rootConfig RootConfig, rootPath string) (path string, err error) {
+	if rootConfig.Gitconfig != "" {
+		path = rootConfig.Gitconfig
+	} else {
+		path = c.Default.Gitconfig
+	}
+	// A missing git path is not an error
+	if path == "" {
+		return
+	}
+	path = pathRelativeToRoot(path, rootPath)
+	return
+}
+
+func (c Config) userConfigs(rootConfig RootConfig, rootPath string) (configs map[string]string, err error) {
+	if rootConfig.Configs != nil {
+		configs = rootConfig.Configs
+	} else {
+		configs = c.Default.Configs
+	}
+	if configs == nil {
+		configs = map[string]string{}
+	}
+	// Patch paths
+	for k, v := range configs {
+		configs[k] = pathRelativeToRoot(v, rootPath)
+	}
+	return
+}
+
 func pathRelativeToRoot(apath, root string) string {
 	if path.IsAbs(apath) {
 		return apath
@@ -134,9 +195,11 @@ type ImageConfig struct {
 }
 
 type RootConfig struct {
-	Image     string // Name of image
-	Workspace string // Path to workspace, if path is relative it is relative to the root
-	Data      string // Path to data
+	Image     string            // Name of image
+	Workspace string            // Path to workspace, if path is relative it is relative to the root
+	Data      string            // Path to data
+	Gitconfig string            // Path to git configuration, typically ~/.gitconfig (single file)
+	Configs   map[string]string // Application configurations, mounted to ~/.config/xx
 }
 
 func main() {
