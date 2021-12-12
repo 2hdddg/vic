@@ -64,114 +64,22 @@ func (c Config) configure(containerConfig *container.Config, hostConfig *contain
 	if !found {
 		return fmt.Errorf("No configuration for image: %s", rootConfig.Image)
 	}
-	workspacePath, err := c.workspace(rootConfig, rootPath)
-	if err != nil {
-		return err
-	}
 	containerConfig.Image = fmt.Sprintf("vic-%s:%s", rootConfig.Image, imageConfig.Tag)
 	containerConfig.WorkingDir = "/host/code"
 	containerConfig.Cmd = strslice.StrSlice([]string{"nvim", "."})
-	hostConfig.Mounts = []mount.Mount{
-		{Type: "bind", Target: "/host/code", Source: rootPath},
-		{Type: "bind", Target: "/host/workspace", Source: workspacePath},
-	}
-	dataPath, err := c.data(rootConfig, rootPath)
+	rootConfig = rootConfig.inherit(c.Default)
+	mounts, err := rootConfig.build(rootPath)
 	if err != nil {
 		return err
 	}
-	if dataPath != "" {
-		dataMount := mount.Mount{Type: "bind", Target: "/host/data", Source: dataPath}
-		hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
-	}
-	gitConfigPath, err := c.gitconfig(rootConfig, rootPath)
-	if err != nil {
-		return err
-	}
-	userConfigs, err := c.userConfigs(rootConfig, rootPath)
-	if err != nil {
-		return err
-	}
-	// Mounts into user directory
-	if gitConfigPath != "" || len(userConfigs) > 0 {
-		user, err := user.Current()
-		if err != nil {
-			return err
-		}
-		// Home on container, not host
-		var homeDirectory = fmt.Sprintf("/home/%s/", user.Username)
-		if gitConfigPath != "" {
-			dataMount := mount.Mount{Type: "bind", Target: path.Join(homeDirectory, ".gitconfig"), Source: gitConfigPath}
-			hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
-		}
-		for name, configPath := range userConfigs {
-			dataMount := mount.Mount{Type: "bind", Target: path.Join(homeDirectory, ".config", name), Source: configPath}
-			hostConfig.Mounts = append(hostConfig.Mounts, dataMount)
-		}
-	}
+	hostConfig.Mounts = mounts
 	return nil
 }
 
-func (c Config) workspace(rootConfig RootConfig, rootPath string) (path string, err error) {
-	if rootConfig.Workspace != "" {
-		path = rootConfig.Workspace
-	} else {
-		path = c.Default.Workspace
-	}
-	if path == "" {
-		err = fmt.Errorf("No workspace configured for: %s", rootPath)
-		return
-	}
-	path = pathRelativeToRoot(path, rootPath)
-	// Ensure that workspace directory exists
-	err = os.MkdirAll(path, os.ModePerm)
-	return
-}
-
-func (c Config) data(rootConfig RootConfig, rootPath string) (path string, err error) {
-	if rootConfig.Data != "" {
-		path = rootConfig.Data
-	} else {
-		path = c.Default.Data
-	}
-	// A missing data path is not an error
-	if path == "" {
-		return
-	}
-	path = pathRelativeToRoot(path, rootPath)
-	return
-}
-
-func (c Config) gitconfig(rootConfig RootConfig, rootPath string) (path string, err error) {
-	if rootConfig.Gitconfig != "" {
-		path = rootConfig.Gitconfig
-	} else {
-		path = c.Default.Gitconfig
-	}
-	// A missing git path is not an error
-	if path == "" {
-		return
-	}
-	path = pathRelativeToRoot(path, rootPath)
-	return
-}
-
-func (c Config) userConfigs(rootConfig RootConfig, rootPath string) (configs map[string]string, err error) {
-	if rootConfig.Configs != nil {
-		configs = rootConfig.Configs
-	} else {
-		configs = c.Default.Configs
-	}
-	if configs == nil {
-		configs = map[string]string{}
-	}
-	// Patch paths
-	for k, v := range configs {
-		configs[k] = pathRelativeToRoot(v, rootPath)
-	}
-	return
-}
-
 func pathRelativeToRoot(apath, root string) string {
+	if apath == "" {
+		return apath
+	}
 	if path.IsAbs(apath) {
 		return apath
 	}
@@ -199,7 +107,90 @@ type RootConfig struct {
 	Workspace string            // Path to workspace, if path is relative it is relative to the root
 	Data      string            // Path to data
 	Gitconfig string            // Path to git configuration, typically ~/.gitconfig (single file)
-	Configs   map[string]string // Application configurations, mounted to ~/.config/xx
+	Gpg       string            // Path to GPG secret keys, typically ~/.gnupg or local for root
+	Ssh       string            // Path to ssh keys, typically ~/.ssh or local for root
+	Configs   map[string]string // Application configurations, mounted to ~/.config/xx or local for root
+}
+
+func (this RootConfig) inherit(parent RootConfig) RootConfig {
+	if this.Image == "" {
+		this.Image = parent.Image
+	}
+	if this.Workspace == "" {
+		this.Workspace = parent.Workspace
+	}
+	if this.Data == "" {
+		this.Data = parent.Data
+	}
+	if this.Gitconfig == "" {
+		this.Gitconfig = parent.Gitconfig
+	}
+	if this.Gpg == "" {
+		this.Gpg = parent.Gpg
+	}
+	if this.Ssh == "" {
+		this.Ssh = parent.Ssh
+	}
+	if this.Configs == nil {
+		this.Configs = parent.Configs
+	}
+	return this
+}
+
+func (this RootConfig) build(rootPath string) (mounts []mount.Mount, err error) {
+	if this.Workspace == "" {
+		err = fmt.Errorf("No workspace configured for: %s", rootPath)
+		return
+	}
+	this.Workspace = pathRelativeToRoot(this.Workspace, rootPath)
+	// Ensure that workspace directory exists
+	err = os.MkdirAll(this.Workspace, os.ModePerm)
+	if err != nil {
+		return
+	}
+	this.Gitconfig = pathRelativeToRoot(this.Gitconfig, rootPath)
+	this.Gpg = pathRelativeToRoot(this.Gpg, rootPath)
+	this.Ssh = pathRelativeToRoot(this.Ssh, rootPath)
+	if this.Configs != nil {
+		for k, v := range this.Configs {
+			this.Configs[k] = pathRelativeToRoot(v, rootPath)
+		}
+	}
+
+	// Stuff to mount into user home directory on container
+	homeDirectory := ""
+	getHomeDirectory := func() string {
+		if homeDirectory != "" {
+			return homeDirectory
+		}
+		var hostUser *user.User
+		hostUser, err = user.Current()
+		if err != nil {
+			return ""
+		}
+		homeDirectory = fmt.Sprintf("/home/%s/", hostUser.Username)
+		return homeDirectory
+	}
+
+	// Build mounts
+	mounts = append(mounts, mount.Mount{Type: "bind", Target: "/host/code", Source: rootPath})
+	mounts = append(mounts, mount.Mount{Type: "bind", Target: "/host/workspace", Source: this.Workspace})
+	if this.Gitconfig != "" {
+		mounts = append(mounts, mount.Mount{Type: "bind", Target: path.Join(getHomeDirectory(), ".gitconfig"), Source: this.Gitconfig})
+	}
+	if this.Gpg != "" {
+		mounts = append(mounts, mount.Mount{Type: "bind", Target: path.Join(getHomeDirectory(), ".gnupg"), Source: this.Gpg})
+	}
+	if this.Ssh != "" {
+		mounts = append(mounts, mount.Mount{Type: "bind", Target: path.Join(getHomeDirectory(), ".ssh"), Source: this.Ssh})
+	}
+	if this.Configs != nil {
+		for k, v := range this.Configs {
+			mounts = append(mounts, mount.Mount{Type: "bind", Target: path.Join(getHomeDirectory(), ".config", k), Source: v})
+		}
+	}
+
+	return
 }
 
 func main() {
