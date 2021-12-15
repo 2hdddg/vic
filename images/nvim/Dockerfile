@@ -3,9 +3,11 @@ FROM debian:bookworm-slim
 # Install general goodies and everything needed to build neovim
 # Run this as root
 RUN apt update && apt install -y \
-    git ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip wget silversearcher-ag
+    git gnupg ninja-build gettext libtool libtool-bin autoconf automake cmake g++ \
+    pkg-config unzip wget silversearcher-ag && \
+    rm -rf /var/cache/apt/lists
 # Build and install neovim
-RUN git clone --depth 1 --branch v0.5.1 https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
+RUN git clone --depth 1 --branch v0.6.0 https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
 
 # Setup the host user
 ARG vicuid=1000

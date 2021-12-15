@@ -129,7 +129,7 @@ require'lualine'.setup {
     lualine_a = {'mode'},
     lualine_b = {'filename'},
     lualine_c = {classInStatusLine},
-    lualine_x = { {'diagnostics', sources = {'nvim_lsp'} } },
+    lualine_x = { {'diagnostics', sources = {'nvim_diagnostic'} } },
     lualine_y = {'progress'},
     lualine_z = {'location'},
   },
@@ -167,7 +167,7 @@ nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
 nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
 
-autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({ focusable = false })
+" autocmd CursorHold * lua vim.diagnostic.show_line_diagnostics({ focusable = false })
 " autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()
 set updatetime=300 " CursorHold trigger time (and write to swap)
 
@@ -180,8 +180,8 @@ set shell=/bin/bash
 nnoremap ,a <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
 nnoremap ,d <cmd>lua require('telescope.builtin.lsp').definitions({shorten_path = false})<CR>
 nnoremap ,r <cmd>lua require('telescope.builtin.lsp').references({shorten_path = false})<CR>
-nnoremap ,D <cmd>lua require('telescope.builtin').lsp_document_diagnostics()<CR>
-nnoremap ,W <cmd>lua require('telescope.builtin').lsp_workspace_diagnostics()<CR>
+nnoremap ,D <cmd>Telescope diagnostics bufnr=0<CR>
+nnoremap ,W <cmd>Telescope diagnostics<CR>
 nnoremap ,i <cmd>lua require('telescope.builtin.lsp').implementations({shorten_path = false})<CR>
 nnoremap ,h <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
