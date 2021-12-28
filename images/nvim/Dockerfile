@@ -43,6 +43,7 @@ RUN nvim --headless "+TSInstallSync vim" +qall
 # Setup the final config
 COPY init.vim  .config/nvim/
 COPY plugs.vim .config/nvim/
+COPY terminal.vim .config/nvim/
 # Make room for filetype plugins
 RUN mkdir .config/nvim/ftplugin
 
