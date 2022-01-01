@@ -1,10 +1,17 @@
 ARG victag=stable
 FROM vic-nvim:${victag}
 
+# Install treesitter syntaxes related to Java
+RUN nvim --headless "+TSInstallSync java" +qall
+RUN nvim --headless "+TSInstallSync scala" +qall
+RUN nvim --headless "+TSInstallSync kotlin" +qall
+
 # Install Java
 USER 0:0
 ARG javaversion=11
-RUN apt install -y openjdk-${javaversion}-jdk
+RUN apt update && apt install -y \
+    openjdk-${javaversion}-jdk && \
+    rm -rf /var/cache/apt/lists
 ENV JAVA_HOME=/usr/lib/jvm/java-${javaversion}-openjdk-amd64
 USER $VICUID:$VICGID
 

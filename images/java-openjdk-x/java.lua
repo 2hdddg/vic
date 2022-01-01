@@ -1,4 +1,3 @@
-
 local jdtls = require'jdtls'
 local jdtls_setup = require'jdtls.setup'
 local home = vim.env.HOME

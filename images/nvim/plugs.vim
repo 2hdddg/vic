@@ -10,6 +10,7 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/vim-vsnip'                " Snippets
+Plug 'hrsh7th/vim-vsnip-integ'          " Snippets integration
 Plug 'srcery-colors/srcery-vim'         " Theme
 Plug 'tpope/vim-fugitive'               " Git
 Plug 'nvim-lua/popup.nvim'              " For telescope
