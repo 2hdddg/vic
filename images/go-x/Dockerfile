@@ -16,6 +16,9 @@ USER $VICUID:$VICGID
 # Install Go language server
 RUN go install golang.org/x/tools/gopls@v0.7.4
 
+# Point packages into workspace to reduce download overhead
+ENV GOMODCACHE=/host/workspace/pkg/mod
+
 COPY go.lua $HOME/.config/nvim/ftplugin/
 
 WORKDIR /host/code
