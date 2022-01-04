@@ -20,7 +20,11 @@ local root_dir = function(fname)
     end
 end
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
 lspconfig.gopls.setup{
     root_dir = root_dir,
+    capabilities = capabilities,
 }
 vim.api.nvim_command(' autocmd BufWritePre *.go lua vim.lsp.buf.formatting_sync(nil, 1000)')

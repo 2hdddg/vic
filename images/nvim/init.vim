@@ -145,6 +145,10 @@ local telescope = require'telescope'
 local previewers = require'telescope.previewers'
 telescope.setup{
   defaults = {
+    layout_strategy = 'vertical',
+    layout_config = {
+        vertical = { width = 0.9 },
+    },
     vimgrep_arguments = { 'ag', '--vimgrep' },
   },
   pickers = {},

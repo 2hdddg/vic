@@ -34,6 +34,7 @@ local jdtls_config = {
     '--add-opens java.base/java.lang=ALL-UNNAMED',
   },
   root_dir = project_root,
+  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
   on_attach = on_attach,
   -- Debug support through VSCode java debug plugin
   init_options = {
@@ -48,7 +49,13 @@ local jdtls_config = {
         import = {
           gradle = { enabled = false },
         },
-        format = { enabled = true },
+        format = {
+            enabled = true,
+            settings = {
+                url = "file:///host/workspace/codestyle-eclipse-java.xml",
+                profile = "neo4j",
+            }
+        },
       },
       eclipse = {
         downloadSources = { enabled = true },
