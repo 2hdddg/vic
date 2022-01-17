@@ -68,7 +68,7 @@ cmp.setup({
 
 -- Status line
 local function classInStatusLine()
-    return require('nvim-treesitter').statusline({type_patterns={"class"},indicator_size=30})
+    return require('nvim-treesitter').statusline({type_patterns={"class"},indicator_size=50})
 end
 local colors = {
   black        = vim.g.srcery_black,
@@ -80,13 +80,13 @@ local colors = {
   orange       = vim.g.srcery_bright_orange,
   gray         = vim.g.srcery_xgray3,
   darkgray     = vim.g.srcery_xgray1,
-  lightgray    = vim.g.srcery_xgray5,
+  lightgray    = vim.g.srcery_xgray6,
 }
 local theme = {
   normal = {
     a = {bg = colors.green, fg = colors.black, gui = 'bold'},
-    b = {bg = colors.gray, fg = colors.white},
-    c = {bg = colors.gray, fg = colors.gray},
+    b = {bg = colors.lightgray, fg = colors.white},
+    c = {bg = colors.lightgray, fg = colors.darkgray},
     x = {bg = colors.black, fg = colors.black},
     y = {bg = colors.orange, fg = colors.black},
     z = {bg = colors.orange, fg = colors.black},
@@ -105,8 +105,8 @@ local theme = {
   },
   inactive = {
     a = {bg = colors.darkgray, fg = colors.gray},
-    b = {bg = colors.darkgray, fg = colors.white},
-    c = {bg = colors.darkgray, fg = colors.gray},
+    b = {bg = colors.lightgray, fg = colors.white},
+    c = {bg = colors.lightgray, fg = colors.darkgray},
     x = {bg = colors.darkgray, fg = colors.lightgray},
     y = {bg = colors.darkgray, fg = colors.lightgray},
     z = {bg = colors.darkgray, fg = colors.lightgray},
@@ -131,7 +131,7 @@ require'lualine'.setup {
   inactive_sections = {
     lualine_a = {},
     lualine_b = {'filename'},
-    lualine_c = {},
+    lualine_c = {classInStatusLine},
     lualine_x = {},
     lualine_y = {'progress'},
     lualine_z = {'location'},
