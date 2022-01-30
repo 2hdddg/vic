@@ -6,11 +6,11 @@ RUN nvim --headless "+TSInstallSync java" +qall
 RUN nvim --headless "+TSInstallSync scala" +qall
 RUN nvim --headless "+TSInstallSync kotlin" +qall
 
-# Install Java
+# Install Java and other Java specific tooling
 USER 0:0
 ARG javaversion=11
 RUN apt update && apt install -y \
-    openjdk-${javaversion}-jdk && \
+    openjdk-${javaversion}-jdk astyle && \
     rm -rf /var/cache/apt/lists
 ENV JAVA_HOME=/usr/lib/jvm/java-${javaversion}-openjdk-amd64
 USER $VICUID:$VICGID
@@ -23,7 +23,7 @@ RUN wget https://dlcdn.apache.org/maven/maven-3/${mavenversion}/binaries/apache-
 ENV PATH="${HOME}/apache-maven-${mavenversion}/bin:${PATH}"
 
 # Download and extract Eclipse JDT language server
-RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.7.0-202112022229.tar.gz && \
+RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.8.0-202201200144.tar.gz && \
     mkdir eclipse.jdt.ls && cd eclipse.jdt.ls && \
     tar -xvzf ../jdt-language-server.tar.gz && cd .. && \
     rm jdt-language-server.tar.gz

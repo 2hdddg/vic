@@ -153,6 +153,7 @@ telescope.setup{
   },
   pickers = {},
 }
+telescope.load_extension('fzf')
 EOF
 
 
