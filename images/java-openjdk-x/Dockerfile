@@ -23,7 +23,7 @@ RUN wget https://dlcdn.apache.org/maven/maven-3/${mavenversion}/binaries/apache-
 ENV PATH="${HOME}/apache-maven-${mavenversion}/bin:${PATH}"
 
 # Download and extract Eclipse JDT language server
-RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.9.0-202203031534.tar.gz && \
+RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.10.0-202203040350.tar.gz && \
     mkdir eclipse.jdt.ls && cd eclipse.jdt.ls && \
     tar -xvzf ../jdt-language-server.tar.gz && cd .. && \
     rm jdt-language-server.tar.gz

@@ -50,11 +50,7 @@ local jdtls_config = {
           gradle = { enabled = false },
         },
         format = {
-            enabled = true,
-            settings = {
-                url = "file:///host/workspace/codestyle-eclipse-java.xml",
-                profile = "neo4j",
-            }
+            enabled = false,
         },
       },
       eclipse = {

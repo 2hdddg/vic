@@ -150,6 +150,9 @@ telescope.setup{
         vertical = { width = 0.9 },
     },
     vimgrep_arguments = { 'ag', '--vimgrep' },
+    cache_picker = {
+        num_pickers = 10,
+    },
   },
   pickers = {},
 }
@@ -161,6 +164,7 @@ EOF
 nnoremap <leader>n <cmd>nohl<cr> " No hightlight
 nnoremap <leader>f <cmd>lua require('telescope.builtin').git_files()<cr>
 nnoremap <leader>F <cmd>lua require('telescope.builtin').file_browser()<cr>
+nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
