@@ -20,6 +20,8 @@ ARG mavenversion=3.8.5
 RUN wget https://dlcdn.apache.org/maven/maven-3/${mavenversion}/binaries/apache-maven-${mavenversion}-bin.tar.gz && \
     tar xzvf apache-maven-${mavenversion}-bin.tar.gz && \
     rm apache-maven-${mavenversion}-bin.tar.gz
+ENV PATH="${HOME}/bin:${PATH}"
+RUN mkdir ${HOME}/bin
 ENV PATH="${HOME}/apache-maven-${mavenversion}/bin:${PATH}"
 
 # Download and extract Eclipse JDT language server
@@ -34,6 +36,9 @@ COPY settings.xml $HOME/.m2/
 # Copy prebuilt VSCode Eclipse debug plugin to a place where Eclips can pick it up
 RUN mkdir $HOME/eclipse_plugins
 COPY com.microsoft.java.debug.plugin-0.34.0.jar $HOME/eclipse_plugins/
+# Copy prebuilt Palantir java formatter
+COPY palantir-java-format-2.22.0.tar $HOME/
+RUN tar -xvf palantir-java-format-*.tar && rm palantir-java-format-*.tar && ln -s ${HOME}/palantir-java-format-2.22.0/bin/palantir-java-format ${HOME}/bin/palantir-java-format
 
 WORKDIR /host/code
 CMD nvim .
