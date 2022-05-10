@@ -25,7 +25,7 @@ RUN mkdir ${HOME}/bin
 ENV PATH="${HOME}/apache-maven-${mavenversion}/bin:${PATH}"
 
 # Download and extract Eclipse JDT language server
-RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.10.0-202203040350.tar.gz && \
+RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.12.0-202205060359.tar.gz && \
     mkdir eclipse.jdt.ls && cd eclipse.jdt.ls && \
     tar -xvzf ../jdt-language-server.tar.gz && cd .. && \
     rm jdt-language-server.tar.gz
@@ -43,6 +43,6 @@ RUN tar -xvf palantir-java-format-*.tar && rm palantir-java-format-*.tar && ln -
 WORKDIR /host/code
 CMD nvim .
 
-# docker build . -t vic-java-openjdk-17:stable --build-arg javaversion=11
+# docker build . -t vic-java-openjdk-17:v0.7.0_A --build-arg javaversion=17 --build-arg victag=v0.7.0_A
 # docker run --name xx --rm -it --mount type=bind,source=/home/peter/code/neo-technology/neo4j-4.x,destination=/host/code --mount type=bind,source=/home/peter/temp_ws,destination=/host/workspace vic-java-openjdk-11:stable /bin/bash
 

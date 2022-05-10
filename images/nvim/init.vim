@@ -34,9 +34,10 @@ nnoremap <silent> <C-z> :call terminal#toggle()<Enter>
 tnoremap <silent> <C-z> :call terminal#toggle()<Enter>
 
 set completeopt=menu,menuone,noselect
+" One global status line, more room for filename
+set laststatus=3
 
 lua <<EOF
-
 
 -- Syntax highlighting
 require'nvim-treesitter.configs'.setup {
@@ -54,7 +55,13 @@ cmp.setup({
         end,
     },
     mapping = {
-        ['<CR>'] = cmp.mapping.confirm({select = true}),
+          ['<C-k>'] = cmp.mapping.select_prev_item(),
+          ['<C-j>'] = cmp.mapping.select_next_item(),
+          ['<CR>'] = cmp.mapping.confirm({select = true}),
+          ['<C-e>'] = cmp.mapping {
+              i = cmp.mapping.abort(),
+              c = cmp.mapping.close(),
+          },
     },
     sources = cmp.config.sources({
         { name = 'nvim_lsp'},
@@ -157,6 +164,30 @@ telescope.setup{
   pickers = {},
 }
 telescope.load_extension('fzf')
+
+-- Formatting on save for different languages
+require("formatter").setup(
+    {
+        filetype = {
+            -- Forward actual formatting to script in workspace
+            java = {
+                function()
+                    return {
+                        exe = "/host/workspace/format",
+                        args = { "-" },
+                        stdin = true,
+                    }
+                end
+            }
+        }
+    })
+vim.api.nvim_exec([[
+augroup FormatAutogroup
+    autocmd!
+    autocmd BufWritePost *.java FormatWrite
+augroup END
+]], true)
+
 EOF
 
 
@@ -177,9 +208,9 @@ set shell=/bin/bash
 
 " LSP
 " Map all standard LSP commands to ,X
-nnoremap ,a <cmd>lua require('telescope.builtin').lsp_code_actions()<cr>
-nnoremap ,d <cmd>lua require('telescope.builtin.lsp').definitions({shorten_path = false})<CR>
-nnoremap ,r <cmd>lua require('telescope.builtin.lsp').references({shorten_path = false})<CR>
+nnoremap ,a <cmd>lua vim.lsp.buf.code_action()<cr>
+nnoremap ,d <cmd>lua require('telescope.builtin').lsp_definitions({shorten_path = false})<CR>
+nnoremap ,r <cmd>lua require('telescope.builtin').lsp_references({shorten_path = false})<CR>
 nnoremap ,D <cmd>Telescope diagnostics bufnr=0<CR>
 nnoremap ,W <cmd>Telescope diagnostics<CR>
 nnoremap ,i <cmd>lua require('telescope.builtin.lsp').implementations({shorten_path = false})<CR>

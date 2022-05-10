@@ -7,7 +7,7 @@ RUN apt update && apt install -y \
     pkg-config unzip wget silversearcher-ag && \
     rm -rf /var/cache/apt/lists
 # Build and install neovim
-RUN git clone --depth 1 --branch v0.6.1 https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
+RUN git clone --depth 1 --branch v0.7.0 https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
 
 # Setup the host user
 ARG vicuid=1000
@@ -43,6 +43,6 @@ RUN mkdir .config/nvim/ftplugin
 # Save bash history in host workspace
 ENV HISTFILE=/host/workspace/.bash_history
 
-# docker build . -t vic-nvim:stable
+# docker build . -t vic-nvim:v0.7.0_A
 # docker run --name xx --rm -it vic-nvim:5.1 /bin/bash
 
