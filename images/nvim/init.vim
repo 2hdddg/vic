@@ -34,8 +34,6 @@ nnoremap <silent> <C-z> :call terminal#toggle()<Enter>
 tnoremap <silent> <C-z> :call terminal#toggle()<Enter>
 
 set completeopt=menu,menuone,noselect
-" One global status line, more room for filename
-set laststatus=3
 
 lua <<EOF
 
