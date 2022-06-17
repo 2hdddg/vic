@@ -21,5 +21,6 @@ Plug 'nvim-treesitter/nvim-treesitter', " Syntax highlight and more
 Plug 'simeji/winresizer'                " Resize windows with Ctrl-E
 Plug 'nvim-lualine/lualine.nvim'        " Status line
 Plug 'mhartington/formatter.nvim'       " Formatting
+Plug 'kyazdani42/nvim-web-devicons'     " For looks
 call plug#end()
 

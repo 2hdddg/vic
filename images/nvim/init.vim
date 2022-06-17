@@ -15,8 +15,11 @@ set clipboard+=unnamedplus
 set signcolumn=yes
 " Skip banner on top of netrw
 let g:netrw_banner=0
+" Otherwise substitution doesn't work multiple times per line
+set nogdefault
 
-let mapleader = ";"
+nnoremap <SPACE> <Nop>
+let mapleader = " "
 
 " set shada='50,%,n/host/workspace/nvim.shada
 
@@ -186,13 +189,16 @@ augroup FormatAutogroup
 augroup END
 ]], true)
 
+-- Nerd font support
+require("nvim-web-devicons").setup({})
+
 EOF
 
 
 " Leader keys
 nnoremap <leader>n <cmd>nohl<cr> " No hightlight
-nnoremap <leader>f <cmd>lua require('telescope.builtin').git_files()<cr>
-nnoremap <leader>F <cmd>lua require('telescope.builtin').file_browser()<cr>
+nnoremap <leader><SPACE> <cmd>lua require('telescope.builtin').git_files()<cr>
+nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
@@ -220,13 +226,10 @@ nnoremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
 
 " DAP debugging
 command! Dbr lua require('dap').toggle_breakpoint()
-command! Dn lua require('dap').step_over()
-command! Di lua require('dap').step_into()
-command! Do lua require('dap').step_out()
 command! Drepl lua require('dap').repl.open()
 command! Dstart lua require('dap').continue()
-command! Dclass lua require('jdtls').test_class()
 command! Dtest lua require('jdtls').test_nearest_method()
-
-" Otherwise substitution doesn't work multiple times per line
-set nogdefault
+"command! Dn lua require('dap').step_over()
+"command! Di lua require('dap').step_into()
+"command! Do lua require('dap').step_out()
+"command! Dclass lua require('jdtls').test_class()
