@@ -46,9 +46,9 @@ local jdtls_config = {
         autobuild = { enabled = true },
         signatureHelp = { enabled = true },
         contentProvider = { preferred = 'fernflower' },
-        import = {
-          gradle = { enabled = false },
-        },
+        --import = {
+        --  gradle = { enabled = false },
+        --},
         format = {
             enabled = false,
         },
