@@ -205,6 +205,7 @@ nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
 nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
+nnoremap <leader>e <cmd>E<cr>
 
 " Terminal
 tnoremap jk  <C-\><C-n>
