@@ -3,6 +3,7 @@ set hidden
 set wildchar=<Tab> wildmenu wildmode=full
 syntax on
 set splitright
+set splitbelow
 set list listchars=tab:»·,trail:·,extends:#
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 set cursorline
@@ -27,14 +28,14 @@ let mapleader = " "
 inoremap jk <esc>
 
 runtime plugs.vim
-runtime terminal.vim
+"runtime terminal.vim
 
 set termguicolors
 colorscheme srcery
 
 " Terminal
-nnoremap <silent> <C-z> :call terminal#toggle()<Enter>
-tnoremap <silent> <C-z> :call terminal#toggle()<Enter>
+nnoremap <silent> <C-z> <cmd>lua require("toggleTerm").toggle()<cr>
+tnoremap <silent> <C-z> <cmd>lua require("toggleTerm").toggle()<cr>
 
 set completeopt=menu,menuone,noselect
 
@@ -192,6 +193,9 @@ augroup END
 -- Nerd font support
 require("nvim-web-devicons").setup({})
 
+-- Fex file explorer
+require("fex").setup({})
+
 EOF
 
 
@@ -205,7 +209,7 @@ nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
 nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
-nnoremap <leader>e <cmd>E<cr>
+nnoremap <leader>e <cmd>Fex()<cr>
 
 " Terminal
 tnoremap jk  <C-\><C-n>
@@ -214,11 +218,11 @@ set shell=/bin/bash
 " LSP
 " Map all standard LSP commands to ,X
 nnoremap ,a <cmd>lua vim.lsp.buf.code_action()<cr>
-nnoremap ,d <cmd>lua require('telescope.builtin').lsp_definitions({shorten_path = false})<CR>
-nnoremap ,r <cmd>lua require('telescope.builtin').lsp_references({shorten_path = false})<CR>
+nnoremap ,d <cmd>lua require('telescope.builtin').lsp_definitions({show_line=false})<CR>
+nnoremap ,r <cmd>lua require('telescope.builtin').lsp_references({show_line=false})<CR>
+nnoremap ,i <cmd>lua require('telescope.builtin').lsp_implementations({show_line=false})<CR>
 nnoremap ,D <cmd>Telescope diagnostics bufnr=0<CR>
 nnoremap ,W <cmd>Telescope diagnostics<CR>
-nnoremap ,i <cmd>lua require('telescope.builtin.lsp').implementations({shorten_path = false})<CR>
 nnoremap ,h <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
 " Standard LSP stuff but specific for jdtls plugin

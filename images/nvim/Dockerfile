@@ -1,5 +1,10 @@
 FROM debian:bookworm-slim
 
+ARG vicuid=1000
+ARG vicuser=peter
+ARG vicgid=1000
+ARG nvimversion=x
+
 # Install general goodies and everything needed to build neovim
 # Run this as root
 RUN apt update && apt install -y \
@@ -7,12 +12,9 @@ RUN apt update && apt install -y \
     pkg-config unzip wget silversearcher-ag && \
     rm -rf /var/cache/apt/lists
 # Build and install neovim
-RUN git clone --depth 1 --branch v0.7.2 https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
+RUN git clone --depth 1 --branch v${nvimversion} https://github.com/neovim/neovim.git && cd neovim && make -j4 && make install && cd .. && rm -rf neovim
 
 # Setup the host user
-ARG vicuid=1000
-ARG vicuser=peter
-ARG vicgid=1000
 ENV VICUID=${vicuid}
 ENV VICGID=${vicgid}
 RUN useradd -r -m -d /home/${vicuser} -u ${vicuid} ${vicuser}
