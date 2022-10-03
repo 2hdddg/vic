@@ -28,7 +28,6 @@ let mapleader = " "
 inoremap jk <esc>
 
 runtime plugs.vim
-"runtime terminal.vim
 
 set termguicolors
 colorscheme srcery

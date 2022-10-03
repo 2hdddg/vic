@@ -35,10 +35,10 @@ RUN nvim --headless +PlugInstall +qall
 RUN nvim --headless "+TSInstallSync lua" +qall
 RUN nvim --headless "+TSInstallSync bash" +qall
 RUN nvim --headless "+TSInstallSync vim" +qall
+
 # Setup the final config
 COPY init.vim  .config/nvim/
 COPY plugs.vim .config/nvim/
-COPY terminal.vim .config/nvim/
 # Make room for filetype plugins
 RUN mkdir .config/nvim/ftplugin
 

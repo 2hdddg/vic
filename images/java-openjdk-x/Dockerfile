@@ -1,11 +1,6 @@
 ARG victag=stable
 FROM vic-nvim:${victag}
 
-# Install treesitter syntaxes related to Java
-RUN nvim --headless "+TSInstallSync java" +qall
-RUN nvim --headless "+TSInstallSync scala" +qall
-RUN nvim --headless "+TSInstallSync kotlin" +qall
-
 # Install Java and other Java specific tooling
 USER 0:0
 ARG javaversion=17
@@ -14,6 +9,11 @@ RUN apt update && apt install -y \
     rm -rf /var/cache/apt/lists
 ENV JAVA_HOME=/usr/lib/jvm/java-${javaversion}-openjdk-amd64
 USER $VICUID:$VICGID
+
+# Install treesitter syntaxes related to Java
+RUN nvim --headless "+TSInstallSync java" +qall
+RUN nvim --headless "+TSInstallSync scala" +qall
+RUN nvim --headless "+TSInstallSync kotlin" +qall
 
 # Install Maven, need newer than Debian has
 ARG mavenversion=3.8.6
@@ -42,8 +42,3 @@ RUN tar -xvf palantir-java-format-*.tar && rm palantir-java-format-*.tar && ln -
 
 WORKDIR /host/code
 CMD nvim .
-
-# docker build . -t vic-java-openjdk-17:v0.7.0_C --build-arg javaversion=17 --build-arg victag=v0.7.0_A
-# docker build . -t vic-java-openjdk-11:v0.7.0_C --build-arg javaversion=11 --build-arg victag=v0.7.0_C --build-arg mavenversion=3.6.3
-# docker run --name xx --rm -it --mount type=bind,source=/home/peter/code/neo-technology/neo4j-4.x,destination=/host/code --mount type=bind,source=/home/peter/temp_ws,destination=/host/workspace vic-java-openjdk-11:stable /bin/bash
-
