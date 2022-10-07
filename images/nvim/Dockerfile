@@ -32,9 +32,9 @@ COPY plugs.vim .config/nvim/init.vim
 RUN nvim --headless +PlugInstall +qall
 # Setup treesitter stuff, install a bunch of languages
 # Since these are a bit time consuming, do this before copying the config for faster builds
-RUN nvim --headless "+TSInstallSync lua" +qall
+#RUN nvim --headless "+TSInstallSync lua" +qall
 RUN nvim --headless "+TSInstallSync bash" +qall
-RUN nvim --headless "+TSInstallSync vim" +qall
+#RUN nvim --headless "+TSInstallSync vim" +qall
 
 # Setup the final config
 COPY init.vim  .config/nvim/
@@ -44,7 +44,3 @@ RUN mkdir .config/nvim/ftplugin
 
 # Save bash history in host workspace
 ENV HISTFILE=/host/workspace/.bash_history
-
-# docker build . -t vic-nvim:v0.7.0_A
-# docker run --name xx --rm -it vic-nvim:5.1 /bin/bash
-

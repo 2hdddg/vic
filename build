@@ -1,10 +1,10 @@
 #/bin/bash
 
 cd images/nvim
-nvimVer=0.7.2
-nvimRev=D
+nvimVer=0.8.0
+nvimRev=A
 nvimTag="v${nvimVer}_${nvimRev}"
-docker build . -t vic-nvim:$nvimTag --no-cache --build-arg nvimversion=$nvimVer
+docker build . -t vic-nvim:$nvimTag --build-arg nvimversion=$nvimVer
 cd ../..
 
 javaRev=A

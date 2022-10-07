@@ -18,6 +18,8 @@ set signcolumn=yes
 let g:netrw_banner=0
 " Otherwise substitution doesn't work multiple times per line
 set nogdefault
+" Gives one more line of code. Requires nvim >= 0.8
+set cmdheight=0
 
 nnoremap <SPACE> <Nop>
 let mapleader = " "

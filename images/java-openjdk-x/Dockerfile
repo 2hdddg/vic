@@ -11,9 +11,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-${javaversion}-openjdk-amd64
 USER $VICUID:$VICGID
 
 # Install treesitter syntaxes related to Java
-RUN nvim --headless "+TSInstallSync java" +qall
-RUN nvim --headless "+TSInstallSync scala" +qall
-RUN nvim --headless "+TSInstallSync kotlin" +qall
+RUN nvim --headless "+TSInstallSync java" +qall; exit 0
+RUN nvim --headless "+TSInstallSync scala" +qall; exit 0
+RUN nvim --headless "+TSInstallSync kotlin" +qall; exit 0
 
 # Install Maven, need newer than Debian has
 ARG mavenversion=3.8.6
@@ -41,4 +41,4 @@ COPY palantir-java-format-2.22.0.tar $HOME/
 RUN tar -xvf palantir-java-format-*.tar && rm palantir-java-format-*.tar && ln -s ${HOME}/palantir-java-format-2.22.0/bin/palantir-java-format ${HOME}/bin/palantir-java-format
 
 WORKDIR /host/code
-CMD nvim .
+CMD nvim +Fex
