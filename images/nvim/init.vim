@@ -152,25 +152,17 @@ require'lualine'.setup {
 
 -- Setup telescope fuzzy finder
 local telescope = require'telescope'
-local previewers = require'telescope.previewers'
 telescope.setup{
   defaults = {
-    layout_strategy = 'vertical',
-    layout_config = {
-        vertical = { width = 0.9 },
-    },
+    layout_strategy = 'bottom_pane',
+    sorting_strategy = "ascending",
     vimgrep_arguments = { 'ag', '--vimgrep' },
-    cache_picker = {
-        num_pickers = 10,
-    },
   },
-  pickers = {},
 }
 telescope.load_extension('fzf')
 
 -- Formatting on save for different languages
-require("formatter").setup(
-    {
+require("formatter").setup({
         filetype = {
             -- Forward actual formatting to script in workspace
             java = {
