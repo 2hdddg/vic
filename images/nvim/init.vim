@@ -76,80 +76,9 @@ cmp.setup({
     }),
 })
 
--- Status line
-local function classInStatusLine()
-    return require('nvim-treesitter').statusline({type_patterns={"class"},indicator_size=50})
-end
-local colors = {
-  black        = vim.g.srcery_black,
-  white        = vim.g.srcery_bright_white,
-  red          = vim.g.srcery_red,
-  green        = vim.g.srcery_green,
-  blue         = vim.g.srcery_blue,
-  yellow       = vim.g.srcery_yellow,
-  orange       = vim.g.srcery_bright_orange,
-  gray         = vim.g.srcery_xgray3,
-  darkgray     = vim.g.srcery_xgray1,
-  lightgray    = vim.g.srcery_xgray6,
-}
-local theme = {
-  normal = {
-    a = {bg = colors.green, fg = colors.black, gui = 'bold'},
-    b = {bg = colors.lightgray, fg = colors.white},
-    c = {bg = colors.lightgray, fg = colors.darkgray},
-    x = {bg = colors.black, fg = colors.black},
-    y = {bg = colors.orange, fg = colors.black},
-    z = {bg = colors.orange, fg = colors.black},
-  },
-  insert = {
-    a = {bg = colors.blue, fg = colors.black, gui = 'bold'},
-  },
-  visual = {
-    a = {bg = colors.yellow, fg = colors.black, gui = 'bold'},
-  },
-  replace = {
-    a = {bg = colors.red, fg = colors.black, gui = 'bold'},
-  },
-  command = {
-    a = {bg = colors.gray, fg = colors.black, gui = 'bold'},
-  },
-  inactive = {
-    a = {bg = colors.darkgray, fg = colors.gray},
-    b = {bg = colors.lightgray, fg = colors.white},
-    c = {bg = colors.lightgray, fg = colors.darkgray},
-    x = {bg = colors.darkgray, fg = colors.lightgray},
-    y = {bg = colors.darkgray, fg = colors.lightgray},
-    z = {bg = colors.darkgray, fg = colors.lightgray},
-  }
-}
-require'lualine'.setup {
-  options = {
-    icons_enabled = false,
-    theme = theme,
-    component_separators = {'', ''},
-    section_separators = {'', ''},
-    disabled_filetypes = {'class'}
-  },
-  sections = {
-    lualine_a = {'mode'},
-    lualine_b = {'filename'},
-    lualine_c = {classInStatusLine},
-    lualine_x = {{'diagnostics', sources = {'nvim_diagnostic'}}},
-    lualine_y = {'progress'},
-    lualine_z = {'location'},
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {'filename'},
-    lualine_c = {classInStatusLine},
-    lualine_x = {},
-    lualine_y = {'progress'},
-    lualine_z = {'location'},
-  },
-  tabline = {},
-  extensions = {}
-}
 
+-- Status line
+require'statusline'
 -- Setup telescope fuzzy finder
 local telescope = require'telescope'
 telescope.setup{

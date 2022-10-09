@@ -32,13 +32,12 @@ COPY plugs.vim .config/nvim/init.vim
 RUN nvim --headless +PlugInstall +qall
 # Setup treesitter stuff, install a bunch of languages
 # Since these are a bit time consuming, do this before copying the config for faster builds
-#RUN nvim --headless "+TSInstallSync lua" +qall
 RUN nvim --headless "+TSInstallSync bash" +qall
-#RUN nvim --headless "+TSInstallSync vim" +qall
 
 # Setup the final config
 COPY init.vim  .config/nvim/
 COPY plugs.vim .config/nvim/
+COPY lua/ .config/nvim/lua/
 # Make room for filetype plugins
 RUN mkdir .config/nvim/ftplugin
 

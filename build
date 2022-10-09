@@ -2,7 +2,7 @@
 
 cd images/nvim
 nvimVer=0.8.0
-nvimRev=C
+nvimRev=D
 nvimTag="v${nvimVer}_${nvimRev}"
 docker build . -t vic-nvim:$nvimTag --build-arg nvimversion=$nvimVer
 cd ../..
@@ -11,5 +11,5 @@ javaRev=A
 javaTag="${nvimTag}_${javaRev}"
 cd images/java-openjdk-x
 docker build . -t vic-java-openjdk-17:$javaTag --build-arg javaversion=17 --build-arg victag=$nvimTag
-docker build . -t vic-java-openjdk-11:$javaTag --build-arg javaversion=11 --build-arg victag=$nvimTag
+#docker build . -t vic-java-openjdk-11:$javaTag --build-arg javaversion=11 --build-arg victag=$nvimTag
 cd ../..
