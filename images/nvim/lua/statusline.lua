@@ -1,6 +1,15 @@
 local function classInStatusLine()
     return require('nvim-treesitter').statusline({type_patterns={"class"},indicator_size=50})
 end
+
+local function recordingMacro()
+    local reg = vim.fn.reg_recording()
+    if reg == "" then
+        return reg
+    end
+    return "Recording @" .. reg
+end
+
 local colors = {
   black        = vim.g.srcery_black,
   white        = vim.g.srcery_bright_white,
@@ -16,7 +25,7 @@ local colors = {
 local theme = {
   normal = {
     a = {bg = colors.green, fg = colors.black, gui = 'bold'},
-    b = {bg = colors.green, fg = colors.black, gui = 'bold'},
+    b = {bg = colors.red, fg = colors.black, gui = 'bold'},
     c = {bg = colors.lightgray, fg = colors.darkgray},
     x = {bg = colors.black, fg = colors.black},
     y = {bg = colors.orange, fg = colors.black},
@@ -57,7 +66,7 @@ require'lualine'.setup {
   },
   sections = {
     lualine_a = {'filename'},
-    lualine_b = {''},
+    lualine_b = {recordingMacro},
     lualine_c = {classInStatusLine},
     lualine_x = {{'diagnostics', sources = {'nvim_diagnostic'}}},
     lualine_y = {'progress'},
