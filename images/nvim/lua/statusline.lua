@@ -1,5 +1,11 @@
+local treesitter = require('nvim-treesitter')
+
 local function classInStatusLine()
-    return require('nvim-treesitter').statusline({type_patterns={"class"},indicator_size=50})
+    local class = treesitter.statusline({type_patterns={"class"},indicator_size=50})
+    if class == nil then
+        return ""
+    end
+    return class
 end
 
 local function recordingMacro()
@@ -8,6 +14,29 @@ local function recordingMacro()
         return reg
     end
     return "Recording @" .. reg
+end
+
+local function searchStatus()
+    if vim.v.hlsearch == 0 then
+        return ""
+    end
+    local x = vim.fn.searchcount()
+    local s = "[" .. x.current .. "/"
+    local total = x.total
+    if x.total == x.maxcount then
+        s = s .. "*]"
+    else
+        s = s .. x.total .. "]"
+    end
+    return "Search " .. s
+end
+
+local function classOrSearch()
+    local search = searchStatus()
+    if not (search == "") then
+        return search
+    end
+    return classInStatusLine()
 end
 
 local colors = {
@@ -67,7 +96,7 @@ require'lualine'.setup {
   sections = {
     lualine_a = {'filename'},
     lualine_b = {recordingMacro},
-    lualine_c = {classInStatusLine},
+    lualine_c = {classOrSearch},
     lualine_x = {{'diagnostics', sources = {'nvim_diagnostic'}}},
     lualine_y = {'progress'},
     lualine_z = {'location'},

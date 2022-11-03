@@ -2,7 +2,7 @@
 
 cd images/nvim
 nvimVer=0.8.0
-nvimRev=D
+nvimRev=F
 nvimTag="v${nvimVer}_${nvimRev}"
 docker build . -t vic-nvim:$nvimTag --build-arg nvimversion=$nvimVer
 cd ../..
