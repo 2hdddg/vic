@@ -85,6 +85,7 @@ telescope.setup{
   defaults = {
     layout_strategy = 'bottom_pane',
     sorting_strategy = "ascending",
+    wrap_results = true,
     vimgrep_arguments = { 'ag', '--vimgrep' },
   },
 }
@@ -131,6 +132,10 @@ nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
 nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
+nnoremap <leader>d <cmd>Telescope diagnostics bufnr=0<CR>
+nnoremap <leader>D <cmd>Telescope diagnostics<CR>
+nnoremap <leader>S <cmd>Telescope lsp_workspace_symbols<CR>
+nnoremap <leader>s <cmd>Telescope lsp_document_symbols<CR>
 nnoremap <leader>e <cmd>Fex()<cr>
 
 " Terminal
@@ -143,8 +148,6 @@ nnoremap ,a <cmd>lua vim.lsp.buf.code_action()<cr>
 nnoremap ,d <cmd>lua require('telescope.builtin').lsp_definitions({show_line=false})<CR>
 nnoremap ,r <cmd>lua require('telescope.builtin').lsp_references({show_line=false})<CR>
 nnoremap ,i <cmd>lua require('telescope.builtin').lsp_implementations({show_line=false})<CR>
-nnoremap ,D <cmd>Telescope diagnostics bufnr=0<CR>
-nnoremap ,W <cmd>Telescope diagnostics<CR>
 nnoremap ,h <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap ,n <cmd>lua vim.lsp.buf.rename()<CR>
 " Standard LSP stuff but specific for jdtls plugin
