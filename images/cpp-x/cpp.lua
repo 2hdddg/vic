@@ -6,9 +6,11 @@ local on_attach = function(client, bufnr)
         vim.cmd('ClangdSwitchSourceHeader')
     end, bufopts)
 end
+require('cmp_nvim_lsp').default_capabilities()
 
 clangd.setup({
     on_attach = on_attach,
+    capabilities = capabilities,
     -- Clangd specific settings
-    cmd = { "clangd", "--all-scopes-completion", "--background-index", "--clang-tidy", "--header-insertion=iwyu", "--pretty" },
+    cmd = { "clangd", "--all-scopes-completion", "--background-index", "--clang-tidy", "--header-insertion=iwyu", "--header-insertion-decorators", "--completion-style=detailed", "--pretty" },
 })

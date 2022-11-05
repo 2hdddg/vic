@@ -50,6 +50,16 @@ require'nvim-treesitter.configs'.setup {
 }
 
 -- Auto completion
+local border = {
+      { "╭" },
+      { "─"},
+      { "╮"},
+      { "│"},
+      { "╯"},
+      { "─"},
+      { "╰"},
+      { "│"},
+}
 local cmp = require'cmp'
 cmp.setup({
     snippet = {
@@ -69,11 +79,19 @@ cmp.setup({
     sources = cmp.config.sources({
         { name = 'nvim_lsp'},
         { name = 'vsnip'},
-        {},
+        { name = 'nvim_lsp_signature_help'},
     }, {
         { name = 'buffer' },
         { name = 'path' },
     }),
+    window = {
+        completion = {
+            border = border,
+        },
+        documentation = {
+            border = border,
+        },
+  },
 })
 
 

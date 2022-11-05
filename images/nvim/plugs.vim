@@ -9,6 +9,7 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help' " LSP function signature
 Plug 'hrsh7th/vim-vsnip'                " Snippets
 Plug 'hrsh7th/vim-vsnip-integ'          " Snippets integration
 Plug 'srcery-colors/srcery-vim'         " Theme
