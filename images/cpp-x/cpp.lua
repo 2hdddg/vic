@@ -6,7 +6,7 @@ local on_attach = function(client, bufnr)
         vim.cmd('ClangdSwitchSourceHeader')
     end, bufopts)
 end
-require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 clangd.setup({
     on_attach = on_attach,
