@@ -25,7 +25,9 @@ RUN mkdir ${HOME}/bin
 ENV PATH="${HOME}/apache-maven-${mavenversion}/bin:${PATH}"
 
 # Download and extract Eclipse JDT language server
-RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.16.0-202209010336.tar.gz && \
+# Last version supporting Java 11 is 1.12.0
+ARG jdtlsversion=jdt-language-server-1.18.0-202211101335
+RUN wget -O jdt-language-server.tar.gz https://download.eclipse.org/jdtls/snapshots/${jdtlsversion}.tar.gz && \
     mkdir eclipse.jdt.ls && cd eclipse.jdt.ls && \
     tar -xvzf ../jdt-language-server.tar.gz && cd .. && \
     rm jdt-language-server.tar.gz
