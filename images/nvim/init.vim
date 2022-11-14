@@ -1,46 +1,74 @@
-set number
-set hidden
-set wildchar=<Tab> wildmenu wildmode=full
-syntax on
-set splitright
-set splitbelow
-set list listchars=tab:»·,trail:·,extends:#
-set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
-set cursorline
-set colorcolumn=80
-set nowrap
-set nomodeline
-set noswapfile
-" Use simple/system clipboard
-set clipboard+=unnamedplus
-set signcolumn=yes
-" Skip banner on top of netrw
-let g:netrw_banner=0
-" Otherwise substitution doesn't work multiple times per line
-set nogdefault
-" Gives one more line of code. Requires nvim >= 0.8
-set cmdheight=0
-
-nnoremap <SPACE> <Nop>
-let mapleader = " "
-
-" set shada='50,%,n/host/workspace/nvim.shada
-
-" jk is escape
-inoremap jk <esc>
-
 runtime plugs.vim
 
-set termguicolors
-colorscheme srcery
-
-" Terminal
-nnoremap <silent> <C-z> <cmd>lua require("toggleTerm").toggle()<cr>
-tnoremap <silent> <C-z> <cmd>lua require("toggleTerm").toggle()<cr>
-
-set completeopt=menu,menuone,noselect
+"set termguicolors
+"colorscheme srcery
 
 lua <<EOF
+
+vim.cmd('colorscheme srcery')
+
+-- Options
+vim.o.number = true
+vim.o.hidden = true
+vim.o.splitright = true
+vim.o.splitbelow = true
+vim.o.cursorline = true
+vim.o.cursorcolumn = true
+vim.o.colorcolumn = 80
+vim.o.wrap = false
+vim.o.modeline = false
+vim.o.swapfile = false
+vim.o.signcolumn = "auto"
+vim.o.clipboard = "unnamed,unnamedplus"
+vim.o.gdefault = false -- Otherwise substitution doesn't work multiple times per line
+vim.o.cmdheight = 0 -- Gives one more line of core. Requires nvim >= 0.8
+vim.o.completeopt = "menu,menuone,noselect" -- As requested by nvim-cmp
+vim.opt.termguicolors = true
+vim.opt.listchars = { tab = "»·", trail = "·", extends="#"}
+vim.opt.list = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 0
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.smarttab = true
+vim.opt.showmatch = true -- Highlight matching brackets
+vim.opt.matchtime = 1
+vim.g.netrw_banner = 0
+
+-- Set leader before any plugins
+vim.g.mapleader = " "
+
+-- ==========================
+-- Keymaps
+-- ==========================
+local keymap_options = { noremap = true, silent = true }
+local set_keymap = vim.api.nvim_set_keymap
+-- UNCATEGORIZED
+-- jk is escape from insert
+set_keymap("i", "jk", "<esc>", keymap_options)
+set_keymap("t", "jk", "<C-\\><C-n>", keymap_options)
+-- Disable space in normal mode as long as it is the leader
+set_keymap("n", "<space>", "<nop>", keymap_options)
+-- Toggle to terminal from normal mode and back again
+set_keymap("n", "<C-z>", "<cmd>lua require('toggleTerm').toggle()<cr>", keymap_options)
+set_keymap("t", "<C-z>", "<cmd>lua require('toggleTerm').toggle()<cr>", keymap_options)
+-- LEADER
+set_keymap("n", "<leader>n", "<cmd>nohl<cr>", keymap_options)
+set_keymap("n", "<leader><SPACE>", "<cmd>lua require('telescope.builtin').git_files()<cr>", keymap_options)
+set_keymap("n", "<leader>F", "<cmd>lua require('telescope.builtin').find_files()<cr>", keymap_options)
+set_keymap("n", "<leader>b", "<cmd>lua require('telescope.builtin').buffers()<cr>", keymap_options)
+set_keymap("n", "<leader>q", "<cmd>lua require('telescope.builtin').quickfix()<cr>", keymap_options)
+set_keymap("n", "<leader>g", "<cmd>lua require('telescope.builtin').grep_string()<cr>", keymap_options)
+set_keymap("n", "<leader>G", "<cmd>lua require('telescope.builtin').live_grep()<cr>", keymap_options)
+set_keymap("n", "<leader>c", "<cmd>lua require('telescope.builtin').git_bcommits()<cr>", keymap_options)
+set_keymap("n", "<leader>C", "<cmd>lua require('telescope.builtin').git_commits()<cr>", keymap_options)
+set_keymap("n", "<leader>d", "<cmd>Telescope diagnostics bufnr=0<cr>", keymap_options)
+set_keymap("n", "<leader>D", "<cmd>Telescope diagnostics<cr>", keymap_options)
+set_keymap("n", "<leader>S", "<cmd>Telescope lsp_workspace_symbols<cr>", keymap_options)
+set_keymap("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<cr>", keymap_options)
+set_keymap("n", "<leader>e", "<cmd>Fex()<cr>", keymap_options)
+
+-- CODE/LSP
 
 -- Syntax highlighting
 require'nvim-treesitter.configs'.setup {
@@ -140,24 +168,7 @@ require("fex").setup({})
 EOF
 
 
-" Leader keys
-nnoremap <leader>n <cmd>nohl<cr> " No hightlight
-nnoremap <leader><SPACE> <cmd>lua require('telescope.builtin').git_files()<cr>
-nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>q <cmd>lua require('telescope.builtin').quickfix()<cr>
-nnoremap <leader>g <cmd>lua require('telescope.builtin').grep_string()<cr>
-nnoremap <leader>G <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>c <cmd>lua require('telescope.builtin').git_bcommits()<cr>
-nnoremap <leader>C <cmd>lua require('telescope.builtin').git_commits()<cr>
-nnoremap <leader>d <cmd>Telescope diagnostics bufnr=0<CR>
-nnoremap <leader>D <cmd>Telescope diagnostics<CR>
-nnoremap <leader>S <cmd>Telescope lsp_workspace_symbols<CR>
-nnoremap <leader>s <cmd>Telescope lsp_document_symbols<CR>
-nnoremap <leader>e <cmd>Fex()<cr>
-
 " Terminal
-tnoremap jk  <C-\><C-n>
 set shell=/bin/bash
 
 " LSP
