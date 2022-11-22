@@ -97,6 +97,12 @@ if install_plugins then
     return
 end
 
+require('nvim-treesitter.configs').setup({
+    highlight = {
+        enable = true,
+    },
+})
+
 local border = {
       { "╭" },
       { "─"},

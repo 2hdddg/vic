@@ -29,8 +29,6 @@ COPY lua/ .config/nvim/lua/
 RUN nvim --headless
 # Setup treesitter stuff, install a bunch of languages
 RUN nvim --headless -c "TSInstallSync bash" -c qall; exit 0
-# Make room for filetype plugins
-RUN mkdir .config/nvim/ftplugin
 
 # Save bash history in host workspace
 ENV HISTFILE=/host/workspace/.bash_history
