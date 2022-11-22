@@ -11,7 +11,7 @@ ENV PATH="${PATH}:/usr/local/go/bin:${HOME}/go/bin"
 USER $VICUID:$VICGID
 
 # Install treesitter syntaxes related to Go
-RUN nvim --headless "+TSInstallSync go" +qall
+RUN nvim --headless -c "TSInstallSync go" -c qall
 
 # Install Go language server
 RUN go install golang.org/x/tools/gopls@v0.8.3

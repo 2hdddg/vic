@@ -22,22 +22,13 @@ USER ${vicuid}:${vicgid}
 ENV HOME=/home/${vicuser}
 WORKDIR $HOME
 
-# Install neovim plugin handler
-RUN mkdir -p $HOME/.local/share/nvim/site/autoload/
-RUN wget https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim && mv plug.vim $HOME/.local/share/nvim/site/autoload/
-# Download my neovim config
-RUN mkdir -p .config/nvim
-# Install neovim plugins, use only plug config initially
-COPY plugs.vim .config/nvim/init.vim
-RUN nvim --headless +PlugInstall +qall
-# Setup treesitter stuff, install a bunch of languages
-# Since these are a bit time consuming, do this before copying the config for faster builds
-RUN nvim --headless "+TSInstallSync bash" +qall
-
-# Setup the final config
-COPY init.vim  .config/nvim/
-COPY plugs.vim .config/nvim/
+# Copy vim config
+COPY init.lua .config/nvim/
 COPY lua/ .config/nvim/lua/
+# This will install plugins and exit
+RUN nvim --headless
+# Setup treesitter stuff, install a bunch of languages
+RUN nvim --headless -c "TSInstallSync bash" -c qall; exit 0
 # Make room for filetype plugins
 RUN mkdir .config/nvim/ftplugin
 

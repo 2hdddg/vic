@@ -11,9 +11,9 @@ ENV JAVA_HOME=/usr/lib/jvm/java-${javaversion}-openjdk-amd64
 USER $VICUID:$VICGID
 
 # Install treesitter syntaxes related to Java
-RUN nvim --headless "+TSInstallSync java" +qall; exit 0
-RUN nvim --headless "+TSInstallSync scala" +qall; exit 0
-RUN nvim --headless "+TSInstallSync kotlin" +qall; exit 0
+RUN nvim --headless -c "TSInstallSync java" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync scala" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync kotlin" -c qall; exit 0
 
 # Install Maven, need newer than Debian has
 ARG mavenversion=3.8.6

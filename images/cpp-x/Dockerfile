@@ -14,11 +14,11 @@ RUN ln -s /usr/bin/clangd-${clangdversion} /usr/bin/clangd
 USER $VICUID:$VIGGID
 
 # Treesitter syntaxes
-RUN nvim --headless "+TSInstallSync cpp" +qall; exit 0
-RUN nvim --headless "+TSInstallSync cmake" +qall; exit 0
-RUN nvim --headless "+TSInstallSync make" +qall; exit 0
-RUN nvim --headless "+TSInstallSync meson" +qall; exit 0
-RUN nvim --headless "+TSInstallSync ninja" +qall; exit 0
+RUN nvim --headless -c "TSInstallSync cpp" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync cmake" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync make" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync meson" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync ninja" -c qall; exit 0
 
 COPY cpp.lua $HOME/.config/nvim/ftplugin/
 
