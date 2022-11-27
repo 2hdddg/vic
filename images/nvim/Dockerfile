@@ -4,6 +4,12 @@ ARG vicuid=1000
 ARG vicuser=peter
 ARG vicgid=1000
 ARG nvimversion=x
+ARG term=alacritty
+ARG terminfo=alacritty.info
+
+# Setup terminal info
+COPY ${terminfo} .
+RUN tic -xe ${term} ${terminfo} && rm ${terminfo}
 
 # Install general goodies and everything needed to build neovim
 # Run this as root
@@ -32,3 +38,4 @@ RUN nvim --headless -c "TSInstallSync bash" -c qall; exit 0
 
 # Save bash history in host workspace
 ENV HISTFILE=/host/workspace/.bash_history
+ENV TERM=${term}

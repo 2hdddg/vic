@@ -15,7 +15,7 @@ vim.o.gdefault = false -- Otherwise substitution doesn't work multiple times per
 vim.o.cmdheight = 0 -- Gives one more line of core. Requires nvim >= 0.8
 vim.o.completeopt = "menu,menuone,noselect" -- As requested by nvim-cmp
 vim.o.relativenumber = true
-vim.opt.termguicolors = true
+vim.opt.termguicolors = false -- Rely on terminal palette
 vim.opt.listchars = { tab = "»·", trail = "·", extends="#"}
 vim.opt.list = true
 vim.opt.tabstop = 4
@@ -47,8 +47,6 @@ local plugins = {
     'hrsh7th/vim-vsnip',
     'hrsh7th/vim-vsnip-integ',
     'hrsh7th/nvim-cmp',
-    -- Color theme
-    'srcery-colors/srcery-vim',
     -- Git
     'tpope/vim-fugitive',
     -- For telescope
@@ -59,7 +57,7 @@ local plugins = {
     -- Fuzzy finder over lists
     { 'nvim-telescope/telescope.nvim', branch = '0.1.x'  },
     -- Syntax highlight and more
-    { 'nvim-treesitter/nvim-treesitter' }, --run = function() vim.cmd("TSUpdate") end },
+    { 'nvim-treesitter/nvim-treesitter' },
     -- Resize windows with Ctrl-E
     'simeji/winresizer',
     -- Status line
@@ -97,88 +95,12 @@ if install_plugins then
     return
 end
 
-require('nvim-treesitter.configs').setup({
-    highlight = {
-        enable = true,
-    },
-})
-
-local border = {
-      { "╭" },
-      { "─"},
-      { "╮"},
-      { "│"},
-      { "╯"},
-      { "─"},
-      { "╰"},
-      { "│"},
-}
-local cmp = require('cmp')
-cmp.setup({
-    snippet = {
-        expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-        end,
-    },
-    mapping = {
-          ['<C-k>'] = cmp.mapping.select_prev_item(),
-          ['<C-j>'] = cmp.mapping.select_next_item(),
-          ['<CR>'] = cmp.mapping.confirm({select = true}),
-          ['<C-e>'] = cmp.mapping {
-              i = cmp.mapping.abort(),
-              c = cmp.mapping.close(),
-          },
-    },
-    sources = cmp.config.sources({
-        { name = 'nvim_lsp'},
-        { name = 'vsnip'},
-        { name = 'nvim_lsp_signature_help'},
-    }, {
-        { name = 'buffer' },
-        { name = 'path' },
-    }),
-    window = {
-        completion = {
-            border = border,
-        },
-        documentation = {
-            border = border,
-        },
-  },
-})
-
-vim.cmd('colorscheme srcery')
-
-require('statusline')
-
 require("marks").setup({})
-
-local telescope = require'telescope'
-telescope.setup{
-  defaults = {
-    layout_strategy = 'bottom_pane',
-    sorting_strategy = "ascending",
-    wrap_results = true,
-    vimgrep_arguments = { 'ag', '--vimgrep' },
-  },
-}
-telescope.load_extension('fzf')
-
-require("formatter").setup({
-        filetype = {
-            -- Forward actual formatting to script in workspace
-            java = {
-                function()
-                    return {
-                        exe = "/host/workspace/format",
-                        args = { "-" },
-                        stdin = true,
-                    }
-                end
-            }
-        }
-    })
-
+require('completion')
+require('finder')
+require('highlights')
+require('statusline') -- Must be after highlights
+require('formatting')
 
 -- ==========================
 -- Keymaps
@@ -218,14 +140,6 @@ set_keymap("n", ",r", "<cmd>lua require('telescope.builtin').lsp_references({sho
 set_keymap("n", ",i", "<cmd>lua require('telescope.builtin').lsp_implementations({show_line=false})<CR>", keymap_options)
 set_keymap("n", ",h", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_options)
 set_keymap("n", ",n", "<cmd>lua vim.lsp.buf.rename()<CR>", keymap_options)
-
--- Formatting on save for different languages
-vim.api.nvim_exec([[
-augroup FormatAutogroup
-    autocmd!
-    autocmd BufWritePost *.java FormatWrite
-augroup END
-]], true)
 
 -- Debugger commands (just a bit shorter than dap versions)
 vim.api.nvim_create_user_command("Dbr",
