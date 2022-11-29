@@ -17,8 +17,8 @@ local theme = {
     
 
     -- Completion menu
-    Pmenu = { fg=colors.bright_white, bg=colors.xgray2 },
-    PmenuSel = { fg=colors.bright_white, bg=colors.blue },
+    Pmenu = { fg=colors.bright_white, bg=colors.black },
+    PmenuSel = { style="reverse" },
     PmenuSbar = { bg=colors.black },
     PmenuThumb = { bg=colors.black },
 
@@ -44,7 +44,7 @@ local theme = {
     Conditional = {fg=colors.red},
     Constant = {fg=colors.bright_magenta},
     Define = {fg=colors.cyan, style="italic"},
-    Delimiter = {fg=colors.bright_black},
+    Delimiter = {fg=colors.red},
     Exception = {fg=colors.red},
     Float = {fg=colors.bright_magenta},
     Function = {fg=colors.yellow},
@@ -55,7 +55,7 @@ local theme = {
     Macro = {link='Include'},
     -- MonText
     Number = {fg=colors.bright_magenta},
-    Operator = {fg=colors.xorange},
+    Operator = {link='Keyword'},
     PreCondit = {fg=colors.cyan},
     PreProc = {link='Include'},
     -- Question
@@ -65,19 +65,22 @@ local theme = {
     -- SpecialComment
     Statement = {fg=colors.red},
     StorageClass = {fg=colors.xorange},
-    String = {fg=colors.white, style="italic"},
-    Structure = {fg=colors.cyan},
-    Todo = {fg=colors.bright_white},
+    String = {fg=colors.cyan, style="italic"},
+    --Structure = {fg=colors.cyan},
+    --Todo = {fg=colors.bright_white},
     Type = {fg=colors.green},
-    Typedef = {fg=colors.cyan},
+    --Typedef = {fg=colors.cyan},
     -- Treesitter
     ['@namespace'] = {fg=colors.bright_black},
-    ['@variable'] = {fg=colors.cyan},
-    ['@parameter'] = {fg=colors.cyan, style="underline"},
-
+    ['@variable'] = {fg=colors.white},
+    ['@parameter'] = {link='@variable'},
+    ['@field'] = {link='@variable'},
+    ['@property'] = {link='@variable'},
+    ['@constructur'] = {link='Function'},
+    -- ['@type.qualifier'] = private static final x
     -- Used by netrw to show file
-    -- In syntax?
-    Identifier = {fg=colors.cyan},
+    -- Also default linked to in syntax
+    --Identifier = {fg=colors.cyan},
 
     -- Diff
     DiffAdd = {fg=colors.green, bg=colors.black},
@@ -96,6 +99,9 @@ local theme = {
     LspDiagnosticsUnderlineHint = { fg=colors.bright_cyan, style='underline'},
 
     -- CMP
+
+    -- Fex
+    FexFile = { fg=colors.cyan },
 }
 
 local function highlight(group, properties)
