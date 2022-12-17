@@ -31,10 +31,19 @@ WORKDIR $HOME
 # Copy vim config
 COPY init.lua .config/nvim/
 COPY lua/ .config/nvim/lua/
+COPY ftplugin/ .config/nvim/ftplugin/
 # This will install plugins and exit
 RUN nvim --headless
 # Setup treesitter stuff, install a bunch of languages
+# C/C++
 RUN nvim --headless -c "TSInstallSync bash" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync cpp" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync cmake" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync make" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync meson" -c qall; exit 0
+RUN nvim --headless -c "TSInstallSync ninja" -c qall; exit 0
+# Go
+RUN nvim --headless -c "TSInstallSync go" -c qall
 
 # Save bash history in host workspace
 ENV HISTFILE=/host/workspace/.bash_history

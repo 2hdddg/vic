@@ -14,7 +14,6 @@ local theme = {
     NonText = { link='Whitespace' },
 
     MoreMsg = {fg=colors.yellow, style="bold"},
-    
 
     -- Completion menu
     Pmenu = { fg=colors.bright_white, bg=colors.black },
@@ -48,7 +47,7 @@ local theme = {
     Exception = {fg=colors.red},
     Float = {fg=colors.bright_magenta},
     Function = {fg=colors.yellow},
-    Include = {fg=colors.cyan, style="italic"},
+    Include = {fg=colors.red, style="italic"},
     -- Ignore
     Keyword = {fg=colors.red},
     Label = {fg=colors.red},
@@ -77,7 +76,8 @@ local theme = {
     ['@field'] = {link='@variable'},
     ['@property'] = {link='@variable'},
     ['@constructur'] = {link='Function'},
-    -- ['@type.qualifier'] = private static final x
+    ['@attribute'] = {fg=colors.xorange},
+    ['@type.qualifier'] = {fg=colors.xorange},
     -- Used by netrw to show file
     -- Also default linked to in syntax
     --Identifier = {fg=colors.cyan},
@@ -102,6 +102,9 @@ local theme = {
 
     -- Fex
     FexFile = { fg=colors.cyan },
+
+    -- TermDebug
+    debugPC = { bg=colors.xgray6, style="NONE" },
 }
 
 local function highlight(group, properties)

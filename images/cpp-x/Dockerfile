@@ -13,15 +13,5 @@ RUN apt update && apt install -y \
 RUN ln -s /usr/bin/clangd-${clangdversion} /usr/bin/clangd
 USER $VICUID:$VIGGID
 
-# Treesitter syntaxes
-RUN nvim --headless -c "TSInstallSync cpp" -c qall; exit 0
-RUN nvim --headless -c "TSInstallSync cmake" -c qall; exit 0
-RUN nvim --headless -c "TSInstallSync make" -c qall; exit 0
-RUN nvim --headless -c "TSInstallSync meson" -c qall; exit 0
-RUN nvim --headless -c "TSInstallSync ninja" -c qall; exit 0
-
-COPY cpp.lua $HOME/.config/nvim/ftplugin/
-
-
 WORKDIR /host/code
 CMD nvim +Fex

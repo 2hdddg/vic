@@ -19,7 +19,5 @@ RUN go install golang.org/x/tools/gopls@v0.8.3
 # Point packages into workspace to reduce download overhead
 ENV GOMODCACHE=/host/workspace/pkg/mod
 
-COPY go.lua $HOME/.config/nvim/ftplugin/
-
 WORKDIR /host/code
 CMD nvim .

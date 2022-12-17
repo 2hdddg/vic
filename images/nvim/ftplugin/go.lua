@@ -4,8 +4,7 @@ if vim.g.goplsSetup == 1 then
 end
 local lspconfig = require'lspconfig'
 local util = require'lspconfig.util'
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 lspconfig.gopls.setup{
     cmd = {"gopls", "serve"},
     filetypes = {"go", "gomod"},
