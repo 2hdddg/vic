@@ -9,7 +9,7 @@ vim.o.colorcolumn = 80
 vim.o.wrap = false
 vim.o.modeline = false
 vim.o.swapfile = false
-vim.o.signcolumn = "auto:3"
+vim.o.signcolumn = "yes:1"
 vim.o.clipboard = "unnamed,unnamedplus"
 vim.o.gdefault = false -- Otherwise substitution doesn't work multiple times per line
 vim.o.cmdheight = 0 -- Gives one more line of core. Requires nvim >= 0.8
@@ -25,7 +25,8 @@ vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.showmatch = true -- Highlight matching brackets
 vim.opt.matchtime = 1
-vim.g.netrw_banner = 0
+--vim.g.loaded_netrw = 1 -- Disable netrw
+--vim.g.loaded_netrwPlugin = 1
 
 -- Set leader before any plugins
 vim.g.mapleader = " "
@@ -33,10 +34,12 @@ vim.g.mapleader = " "
 local plugins = {
     -- LSP configuration support
     'neovim/nvim-lspconfig',
+    -- Enhanced C++
+    'p00f/clangd_extensions.nvim',
     -- Enhanced Java LSP support
-    'mfussenegger/nvim-jdtls',
+    --'mfussenegger/nvim-jdtls',
     -- Debugger support
-    'mfussenegger/nvim-dap',
+    --'mfussenegger/nvim-dap',
     -- Auto completion
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
@@ -91,6 +94,7 @@ if install_plugins then
     paq.install()
     -- Wait for install to complete before proceeding to quit
     vim.cmd('autocmd User PaqDoneInstall quit')
+    --vim.api.nvim_create_autocmd({"User"
     -- Can not continue to setup plugins here since they are being installed async
     return
 end
@@ -101,6 +105,14 @@ require('finder')
 require('highlights')
 require('statusline') -- Must be after highlights
 require('formatting')
+require('fex').setup({})
+
+local term_clear = function()
+    --vim.fn.feedkeys("^L", 'n')
+    local sb = vim.bo.scrollback
+    vim.bo.scrollback = 1
+    vim.bo.scrollback = sb
+end
 
 -- ==========================
 -- Keymaps
@@ -140,6 +152,7 @@ set_keymap("n", ",r", "<cmd>lua require('telescope.builtin').lsp_references({sho
 set_keymap("n", ",i", "<cmd>lua require('telescope.builtin').lsp_implementations({show_line=false})<CR>", keymap_options)
 set_keymap("n", ",h", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_options)
 set_keymap("n", ",n", "<cmd>lua vim.lsp.buf.rename()<CR>", keymap_options)
+vim.keymap.set("t", '<C-l>', term_clear)
 
 -- Debugger commands (just a bit shorter than dap versions)
 vim.api.nvim_create_user_command("Dbr",

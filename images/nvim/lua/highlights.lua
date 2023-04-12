@@ -75,7 +75,8 @@ local theme = {
     ['@parameter'] = {link='@variable'},
     ['@field'] = {link='@variable'},
     ['@property'] = {link='@variable'},
-    ['@constructur'] = {link='Function'},
+    ['@constructor'] = {link='Function'},
+    ['@function.call'] = {link='Function'},
     ['@attribute'] = {fg=colors.xorange},
     ['@type.qualifier'] = {fg=colors.xorange},
     -- Used by netrw to show file
