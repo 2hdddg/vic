@@ -37,15 +37,15 @@ local theme = {
     Cursor = {fg=colors.black, bg=colors.yellow},
 
     -- Syntax
-    Boolean = {fg=colors.bright_magenta},
-    Character = {fg=colors.bright_magenta},
+    Constant = {fg=colors.blue},
+    Boolean = {link='Constant'},
+    Character = {link='Constant'},
     Comment = {fg=colors.xgray6, style="italic"},
     Conditional = {fg=colors.red},
-    Constant = {fg=colors.bright_magenta},
     Define = {fg=colors.cyan, style="italic"},
     Delimiter = {fg=colors.red},
     Exception = {fg=colors.red},
-    Float = {fg=colors.bright_magenta},
+    Float = {link='Constant'},
     Function = {fg=colors.yellow},
     Include = {fg=colors.red, style="italic"},
     -- Ignore
@@ -53,7 +53,7 @@ local theme = {
     Label = {fg=colors.red},
     Macro = {link='Include'},
     -- MonText
-    Number = {fg=colors.bright_magenta},
+    Number = {link='Constant'},
     Operator = {link='Keyword'},
     PreCondit = {fg=colors.cyan},
     PreProc = {link='Include'},
@@ -64,7 +64,7 @@ local theme = {
     -- SpecialComment
     Statement = {fg=colors.red},
     StorageClass = {fg=colors.xorange},
-    String = {fg=colors.cyan, style="italic"},
+    String = {fg=colors.blue, style="italic"},
     --Structure = {fg=colors.cyan},
     --Todo = {fg=colors.bright_white},
     Type = {fg=colors.green},
@@ -81,7 +81,7 @@ local theme = {
     ['@type.qualifier'] = {fg=colors.xorange},
     -- Used by netrw to show file
     -- Also default linked to in syntax
-    --Identifier = {fg=colors.cyan},
+    Identifier = {fg=colors.white},
 
     -- Diff
     DiffAdd = {fg=colors.green, bg=colors.black},
