@@ -1,14 +1,4 @@
 local cmp = require('cmp')
-local border = {
-      { "╭" },
-      { "─"},
-      { "╮"},
-      { "│"},
-      { "╯"},
-      { "─"},
-      { "╰"},
-      { "│"},
-}
 cmp.setup({
     snippet = {
         expand = function(args)
@@ -33,11 +23,11 @@ cmp.setup({
         { name = 'path' },
     }),
     window = {
-        completion = {
-            border = border,
-        },
-        documentation = {
-            border = border,
-        },
+      completion = cmp.config.window.bordered({
+        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+      }),
+      documentation = cmp.config.window.bordered({
+        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+      }),
   },
 })

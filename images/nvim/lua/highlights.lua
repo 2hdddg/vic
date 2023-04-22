@@ -48,6 +48,7 @@ local theme = {
     ['@type.qualifier'] = {link='Keyword'},
     -- Stuff loke void/float..
     ['@type.builtin'] = {link='Keyword'},
+    StorageClass = {link='Keyword'},
     -- Constants (like literals but also semantic)
     Constant = {fg=colors.green},
     Boolean = {link='Constant'},
@@ -63,6 +64,7 @@ local theme = {
     ['@lsp.typemod.property.readonly'] = {link='Constant'},
     -- Type
     Type = {fg=colors.cyan},
+    Structure = {link='Structure'},
     -- Separators
     Operator = {fg=colors.bright_black},
     Delimiter = {link='Operator'},
@@ -81,10 +83,8 @@ local theme = {
     -- Make special chars stick out from string
     Special = {fg=colors.red},
     -- SpecialComment
-    StorageClass = {fg=colors.xorange},
-    --Structure = {fg=colors.cyan},
-    --Todo = {fg=colors.bright_white},
-    --Typedef = {fg=colors.cyan},
+    Todo = {fg=colors.xorange},
+    Typedef = {link='Type'},
     -- Treesitter
     ['@namespace'] = {fg=colors.bright_black},
     ['@variable'] = {fg=colors.white},
@@ -111,7 +111,9 @@ local theme = {
     LspDiagnosticsUnderlineInformation = {fg=colors.bright_green, style='underline'},
     LspDiagnosticsUnderlineHint = { fg=colors.bright_cyan, style='underline'},
 
-    -- CMP
+    -- CMP (ItemKind is just the kind, not the actual name)
+    CmpItemKindDefault = {link='Identifier'},
+    CmpItemKindFunction = {link='Function'},
 
     -- Fex
     FexFile = { fg=colors.cyan },
