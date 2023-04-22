@@ -59,6 +59,8 @@ local theme = {
     String = {fg=colors.bright_black, style="italic"},
     -- Scope of variables (instance vars)
     ['@lsp.typemod.property.classScope'] = {fg=colors.xbright_orange},
+    -- Want this to override above but they are same priority...
+    ['@lsp.typemod.property.readonly'] = {link='Constant'},
     -- Type
     Type = {fg=colors.cyan},
     -- Separators
