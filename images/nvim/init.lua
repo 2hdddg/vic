@@ -40,7 +40,7 @@ local plugins = {
     --'mfussenegger/nvim-jdtls',
     -- Debugger support
     --'mfussenegger/nvim-dap',
-    -- Auto completion
+    -- Auto completion sources
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-buffer',
     'hrsh7th/cmp-path',
@@ -49,6 +49,9 @@ local plugins = {
     -- Snippets
     'hrsh7th/vim-vsnip',
     'hrsh7th/vim-vsnip-integ',
+    -- And some actual snippets
+    'rafamadriz/friendly-snippets',
+    -- Completion itself
     'hrsh7th/nvim-cmp',
     -- Git
     'tpope/vim-fugitive',
