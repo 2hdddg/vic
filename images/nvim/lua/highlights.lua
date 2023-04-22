@@ -12,8 +12,14 @@ local theme = {
     Underlined = { fg=colors.blue, style = "underline" },
     Whitespace = { fg=colors.xgray3 },
     NonText = { link='Whitespace' },
-
     MoreMsg = {fg=colors.yellow, style="bold"},
+    Directory = {fg=colors.green, style="bold"},
+    Title = {fg=colors.green, style="bold"},
+    LineNr = {fg=colors.bright_black},
+    SignColumn = {bg=colors.black},
+    Folded = {fg=colors.bright_black, bg=colors.black, style="italic"},
+    FoldColumn = {fg=colors.bright_black, bg=colors.black},
+    Cursor = {fg=colors.black, bg=colors.yellow},
 
     -- Completion menu
     Pmenu = { fg=colors.bright_white, bg=colors.black },
@@ -27,47 +33,52 @@ local theme = {
     TelescopeSelection = { link = 'PmenuSel' },
     TelescopeMatching = {style = "reverse" },
 
-    Directory = {fg=colors.green, style="bold"},
-    Title = {fg=colors.green, style="bold"},
-    LineNr = {fg=colors.bright_black},
-
-    SignColumn = {bg=colors.black},
-    Folded = {fg=colors.bright_black, bg=colors.black, style="italic"},
-    FoldColumn = {fg=colors.bright_black, bg=colors.black},
-    Cursor = {fg=colors.black, bg=colors.yellow},
-
     -- Syntax
-    Constant = {fg=colors.blue},
+    -- Used by netrw to show file
+    -- Also default linked to in syntax
+    Identifier = {fg=colors.white},
+    -- Built in language keywords
+    Keyword = {fg=colors.red},
+    Repeat = {link='Keyword'},
+    Statement = {link='Keyword'},
+    Conditional = {link='Keyword'},
+    ['@type.qualifier'] = {link='Keyword'},
+    -- Stuff loke void/float..
+    ['@type.builtin'] = {link='Keyword'},
+    -- Constants (like literals but also semantic)
+    Constant = {fg=colors.green},
     Boolean = {link='Constant'},
     Character = {link='Constant'},
-    Comment = {fg=colors.xgray6, style="italic"},
-    Conditional = {fg=colors.red},
-    Define = {fg=colors.cyan, style="italic"},
-    Delimiter = {fg=colors.red},
-    Exception = {fg=colors.red},
     Float = {link='Constant'},
-    Function = {fg=colors.yellow},
-    Include = {fg=colors.red, style="italic"},
-    -- Ignore
-    Keyword = {fg=colors.red},
-    Label = {fg=colors.red},
-    Macro = {link='Include'},
-    -- MonText
     Number = {link='Constant'},
-    Operator = {link='Keyword'},
+    ['@lsp.mod.readonly'] = {link='Constant'},
+    -- Special constant is string
+    String = {fg=colors.bright_black, style="italic"},
+    -- Scope of variables (instance vars)
+    ['@lsp.typemod.property.classScope'] = {fg=colors.xbright_orange},
+    -- Type
+    Type = {fg=colors.cyan},
+    -- Separators
+    Operator = {fg=colors.bright_black},
+    Delimiter = {link='Operator'},
+    -- Comment
+    Comment = {fg=colors.xgray6, style="italic"},
+    -- Preprocessor
+    PreProc = {fg=colors.blue, style="italic"},
+    Define = {link='PreProc'},
+    Include = {link='PreProc'},
+    Macro = {link='PreProc'},
+
+    Exception = {fg=colors.red},
+    Function = {fg=colors.yellow},
+    Label = {fg=colors.red},
     PreCondit = {fg=colors.cyan},
-    PreProc = {link='Include'},
-    -- Question
-    Repeat = {fg=colors.red},
     -- Make special chars stick out from string
     Special = {fg=colors.red},
     -- SpecialComment
-    Statement = {fg=colors.red},
     StorageClass = {fg=colors.xorange},
-    String = {fg=colors.blue, style="italic"},
     --Structure = {fg=colors.cyan},
     --Todo = {fg=colors.bright_white},
-    Type = {fg=colors.green},
     --Typedef = {fg=colors.cyan},
     -- Treesitter
     ['@namespace'] = {fg=colors.bright_black},
@@ -78,10 +89,6 @@ local theme = {
     ['@constructor'] = {link='Function'},
     ['@function.call'] = {link='Function'},
     ['@attribute'] = {fg=colors.xorange},
-    ['@type.qualifier'] = {fg=colors.xorange},
-    -- Used by netrw to show file
-    -- Also default linked to in syntax
-    Identifier = {fg=colors.white},
 
     -- Diff
     DiffAdd = {fg=colors.green, bg=colors.black},
