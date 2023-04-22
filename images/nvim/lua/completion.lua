@@ -22,9 +22,7 @@ cmp.setup({
         { name = 'buffer' },
         { name = 'path' },
     }),
-    view = {
-        entries = "custom",
-    },
+    view = { entries = "custom", },
     window = {
       completion = cmp.config.window.bordered({
         winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
@@ -34,4 +32,14 @@ cmp.setup({
       --  winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
       --}),
   },
+})
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = { { name = 'cmdline' }, },
+    formatting = { fields = { "abbr" }, },
+})
+cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = { { name = 'buffer' } },
+    formatting = { fields = { "abbr" } },
 })
