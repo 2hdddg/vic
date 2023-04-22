@@ -65,8 +65,6 @@ local plugins = {
     'simeji/winresizer',
     -- Status line
     'nvim-lualine/lualine.nvim',
-    -- Formatting
-    'mhartington/formatter.nvim',
     -- For looks
     'kyazdani42/nvim-web-devicons',
     -- For marks in gutter
@@ -104,7 +102,6 @@ require('completion')
 require('finder')
 require('highlights')
 require('statusline') -- Must be after highlights
-require('formatting')
 require('fex').setup({})
 
 local term_clear = function()
