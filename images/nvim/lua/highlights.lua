@@ -25,7 +25,7 @@ local theme = {
     NormalFloat = {bg=colors.black},
 
     -- Completion menu
-    Pmenu = { fg=colors.bright_white, bg=colors.black },
+    Pmenu = { fg=colors.white, bg=colors.black },
     PmenuSel = { style="reverse" },
     PmenuSbar = { bg=colors.black },
     PmenuThumb = { bg=colors.black },
@@ -35,6 +35,7 @@ local theme = {
     TelescopePreviewNormal = { bg =colors.black }, -- Make preview of code look normal
     TelescopeSelection = { link = 'PmenuSel' },
     TelescopeMatching = {style = "reverse" },
+    TelescopeBorder = {link = 'FloatBorder'},
 
     -- Syntax
     -- Used by netrw to show file
