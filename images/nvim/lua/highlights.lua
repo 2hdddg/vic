@@ -20,6 +20,9 @@ local theme = {
     Folded = {fg=colors.bright_black, bg=colors.black, style="italic"},
     FoldColumn = {fg=colors.bright_black, bg=colors.black},
     Cursor = {fg=colors.black, bg=colors.yellow},
+    -- Popup border and background
+    FloatBorder = {fg=colors.yellow},
+    NormalFloat = {bg=colors.black},
 
     -- Completion menu
     Pmenu = { fg=colors.bright_white, bg=colors.black },

@@ -159,16 +159,21 @@ set_keymap("n", ",h", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_options)
 set_keymap("n", ",n", "<cmd>lua vim.lsp.buf.rename()<CR>", keymap_options)
 vim.keymap.set("t", '<C-l>', term_clear)
 
--- Debugger commands (just a bit shorter than dap versions)
-vim.api.nvim_create_user_command("Dbr",
-    function(opts)
-        require('dap').toggle_breakpoint()
-    end, {})
-vim.api.nvim_create_user_command("Dstart",
-    function(opts)
-        require('dap').continue()
-    end, {})
-vim.api.nvim_create_user_command("Drepl",
-    function(opts)
-        require('dap').repl.open()
-    end, {})
+-- LSP UI
+-- Help popup on ,h
+-- ctr-w w to move cursor to it
+vim.lsp.handlers["textDocument/hover"] =
+  vim.lsp.with(
+  vim.lsp.handlers.hover,
+  {
+    border = "single"
+  }
+)
+-- Smaller box
+vim.lsp.handlers["textDocument/signatureHelp"] =
+  vim.lsp.with(
+  vim.lsp.handlers.signature_help,
+  {
+    border = "single"
+  }
+)
