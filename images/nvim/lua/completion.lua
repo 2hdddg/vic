@@ -22,6 +22,9 @@ cmp.setup({
         { name = 'buffer' },
         { name = 'path' },
     }),
+    view = {
+        entries = "custom",
+    },
     window = {
       completion = cmp.config.window.bordered({
         winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
