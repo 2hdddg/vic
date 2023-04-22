@@ -1,3 +1,6 @@
+if vim.g.clangdSetup == 1 then
+    return
+end
 local clangd = require('lspconfig').clangd
 local on_attach = function(client, bufnr)
     -- Map Clangd specific command to toggle between h/cpp
@@ -5,6 +8,7 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', ',q', function()
         vim.cmd('ClangdSwitchSourceHeader')
     end, bufopts)
+    vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
 end
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -20,3 +24,4 @@ require("clangd_extensions").setup({
 vim.cmd('packadd termdebug')
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
+vim.g.goplsSetup = 1
