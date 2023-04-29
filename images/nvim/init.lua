@@ -27,7 +27,6 @@ vim.opt.showmatch = true -- Highlight matching brackets
 vim.opt.matchtime = 1
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
 -- Set leader before any plugins
 vim.g.mapleader = " "
 
