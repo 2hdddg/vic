@@ -63,6 +63,7 @@ local theme = {
     ['@lsp.typemod.property.classScope'] = {fg=colors.xbright_orange},
     -- Want this to override above but they are same priority...
     ['@lsp.typemod.property.readonly'] = {link='Constant'},
+    ['@lsp.typemod.property.readonly.cpp'] = {link='Constant'},
     -- Type
     Type = {fg=colors.cyan},
     Structure = {link='Structure'},
@@ -115,9 +116,6 @@ local theme = {
     -- CMP (ItemKind is just the kind, not the actual name)
     CmpItemKindDefault = {link='Identifier'},
     CmpItemKindFunction = {link='Function'},
-
-    -- Fex
-    FexFile = { fg=colors.cyan },
 
     -- TermDebug
     debugPC = { bg=colors.xgray6, style="NONE" },

@@ -25,8 +25,8 @@ vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.showmatch = true -- Highlight matching brackets
 vim.opt.matchtime = 1
---vim.g.loaded_netrw = 1 -- Disable netrw
---vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Set leader before any plugins
 vim.g.mapleader = " "
@@ -73,10 +73,10 @@ local plugins = {
     'kyazdani42/nvim-web-devicons',
     -- For marks in gutter
     'chentoast/marks.nvim',
-    -- File explorer
-    '2hdddg/fex.nvim',
     -- Toggle terminal
-    '2hdddg/toggleTerm.nvim'
+    '2hdddg/toggleTerm.nvim',
+    -- File explorer
+    'nvim-telescope/telescope-file-browser.nvim',
 }
 
 -- Bootstrap plugin manager
@@ -106,7 +106,6 @@ require('completion')
 require('finder')
 require('highlights')
 require('statusline') -- Must be after highlights
-require('fex').setup({})
 
 local term_clear = function()
     --vim.fn.feedkeys("^L", 'n')
@@ -152,7 +151,7 @@ set_keymap("n", "<leader>d", "<cmd>Telescope diagnostics bufnr=0<cr>", keymap_op
 set_keymap("n", "<leader>D", "<cmd>Telescope diagnostics<cr>", keymap_options)                                  -- Show all diagnostics
 set_keymap("n", "<leader>S", "<cmd>Telescope lsp_workspace_symbols<cr>", keymap_options)
 set_keymap("n", "<leader>s", "<cmd>Telescope lsp_document_symbols<cr>", keymap_options)
-set_keymap("n", "<leader>e", "<cmd>Fex()<cr>", keymap_options)
+set_keymap("n", "<leader>e", "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", keymap_options)
 set_keymap("n", "<leader>m", "<cmd>MarksQFListAll<cr>", keymap_options)
 set_keymap("n", "<leader>1", "<cmd>lua vim.o.relativenumber = not vim.o.relativenumber<cr>", keymap_options)
 -- COMMA
