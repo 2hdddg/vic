@@ -69,7 +69,7 @@ local plugins = {
     -- Status line
     'nvim-lualine/lualine.nvim',
     -- For looks
-    'kyazdani42/nvim-web-devicons',
+    'nvim-tree/nvim-web-devicons',
     -- For marks in gutter
     'chentoast/marks.nvim',
     -- Toggle terminal

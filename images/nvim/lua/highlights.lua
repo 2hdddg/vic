@@ -32,10 +32,22 @@ local theme = {
 
     -- Telescope, style as completion menu
     TelescopeNormal = { link = 'Pmenu' },
-    TelescopePreviewNormal = { bg =colors.black }, -- Make preview of code look normal
+    TelescopePreviewNormal = { bg = colors.black }, -- Make preview of code look normal
     TelescopeSelection = { link = 'PmenuSel' },
     TelescopeMatching = {style = "reverse" },
     TelescopeBorder = {link = 'FloatBorder'},
+    -- Telescope file browser
+    -- File attributes
+    TelescopePreviewDirectory = { fg=colors.green }, -- link = 'TelescopePreviewNormal'},
+    TelescopePreviewLink = {link = 'TelescopePreviewNormal'},
+    TelescopePreviewSocket = {link = 'TelescopePreviewNormal'},
+    TelescopePreviewRead = {link = 'TelescopePreviewNormal'},
+    TelescopePreviewWrite = {link = 'TelescopePreviewNormal'},
+    TelescopePreviewExecute = {link = 'TelescopePreviewNormal'},
+    TelescopePreviewHyphen = {link = 'TelescopePreviewNormal'},
+    -- File size
+    -- TelescopePreviewSize
+
 
     -- Syntax
     -- Used by netrw to show file
