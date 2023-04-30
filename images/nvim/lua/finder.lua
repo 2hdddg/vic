@@ -19,6 +19,7 @@ telescope.setup{
           hijack_netrw = true,
           hidden = true,
           grouped = true,
+          hide_parent_dir = true,
       },
   },
 }

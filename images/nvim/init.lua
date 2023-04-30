@@ -124,9 +124,13 @@ set_keymap("i", "jk", "<esc>", keymap_options)
 set_keymap("t", "jk", "<C-\\><C-n>", keymap_options)
 -- Disable space in normal mode as long as it is the leader
 set_keymap("n", "<space>", "<nop>", keymap_options)
--- Toggle to terminal from normal mode and back again
-set_keymap("n", "<C-z>", "<cmd>lua require('toggleTerm').toggle()<cr>", keymap_options)
-set_keymap("t", "<C-z>", "<cmd>lua require('toggleTerm').toggle()<cr>", keymap_options)
+-- Toggle to terminal from normal mode and back again. Hard coded for 4 active terminals
+set_keymap("t", "<C-z>", "<cmd>lua require('toggleTerm').from_terminal()<cr>", keymap_options)
+set_keymap("n", "<C-z>", "<cmd>lua require('toggleTerm').from_terminal()<cr>", keymap_options)
+set_keymap("n", ",1", "<cmd>lua require('toggleTerm').to_terminal(1)<cr>", keymap_options)
+set_keymap("n", ",2", "<cmd>lua require('toggleTerm').to_terminal(2)<cr>", keymap_options)
+set_keymap("n", ",3", "<cmd>lua require('toggleTerm').to_terminal(3)<cr>", keymap_options)
+set_keymap("n", ",4", "<cmd>lua require('toggleTerm').to_terminal(4)<cr>", keymap_options)
 -- LEADER
 set_keymap("n", "<leader>n", "<cmd>nohl<cr>", keymap_options)                                                   -- Clear highlight
 vim.keymap.set("n", "<leader><SPACE>", function()
