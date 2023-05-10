@@ -10,7 +10,8 @@ cmp.setup({
           ['<C-j>'] = cmp.mapping.select_next_item(),
           -- select = false -> Need to select something
           ['<CR>'] = cmp.mapping.confirm({select = false}),
-          ['<TAB>'] = cmp.mapping.confirm({select = true}),
+          ['<TAB>'] = cmp.mapping.select_next_item(),
+          ['<S-TAB>'] = cmp.mapping.select_prev_item(),
           ['<C-Space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping {
               i = cmp.mapping.abort(),
