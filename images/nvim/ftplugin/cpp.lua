@@ -24,4 +24,4 @@ require("clangd_extensions").setup({
 vim.cmd('packadd termdebug')
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
-vim.g.goplsSetup = 1
+vim.g.clangdSetup = 1
