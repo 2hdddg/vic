@@ -15,6 +15,8 @@ vim.o.gdefault = false -- Otherwise substitution doesn't work multiple times per
 vim.o.cmdheight = 0 -- Gives one more line of core. Requires nvim >= 0.8
 vim.o.completeopt = "menu,menuone,noselect" -- As requested by nvim-cmp
 vim.o.relativenumber = true
+vim.o.pumheight = 10 -- Size of completion pop
+vim.o.pumwidth = 80
 vim.opt.termguicolors = false -- Rely on terminal palette
 vim.opt.listchars = { tab = "»·", trail = "·", extends="#"}
 vim.opt.list = true
@@ -167,6 +169,22 @@ set_keymap("n", ",H", "<cmd>lua vim.lsp.buf.hover()<CR>", keymap_options)
 set_keymap("n", ",n", "<cmd>lua vim.lsp.buf.rename()<CR>", keymap_options)
 vim.keymap.set("t", '<C-l>', term_clear)
 
+-- Setup treesitter to use highlighting
+require('nvim-treesitter.configs').setup({
+    highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+    },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "gnn", -- set to `false` to disable one of the mappings
+        node_incremental = "gni",
+        node_decremental = "gnd",
+        scope_incremental = "grc",
+      },
+    },
+})
 -- LSP UI
 -- Help popup on ,h
 -- ctr-w w to move cursor to it

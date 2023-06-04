@@ -157,9 +157,3 @@ vim.cmd("highlight clear")
 for group, properties in pairs(theme) do
     highlight(group, properties)
 end
--- Setup treesitter to use highlighting
-require('nvim-treesitter.configs').setup({
-    highlight = {
-        enable = true,
-    },
-})

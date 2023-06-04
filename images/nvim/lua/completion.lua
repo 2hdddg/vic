@@ -32,9 +32,11 @@ cmp.setup({
         winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
       }),
       -- In the way sometimes...
-      --documentation = cmp.config.window.bordered({
-      --  winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-      --}),
+      documentation = cmp.config.window.bordered({
+        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+        max_width = 40,
+        max_height = 10,
+      }),
   },
 })
 cmp.setup.cmdline(':', {
