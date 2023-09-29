@@ -31,6 +31,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 -- Set leader before any plugins
 vim.g.mapleader = " "
+vim.lsp.set_log_level("off")
 
 local plugins = {
     -- LSP configuration support
@@ -134,6 +135,7 @@ set_keymap("n", "<leader>C", "<cmd>lua require('telescope.builtin').git_commits(
 set_keymap("n", "<leader>d", "<cmd>Telescope diagnostics bufnr=0<cr>", keymap_options)                          -- Show diagnostics for current buffer
 set_keymap("n", "<leader>D", "<cmd>Telescope diagnostics<cr>", keymap_options)                                  -- Show all diagnostics
 set_keymap("n", "<leader>e", "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", keymap_options)
+set_keymap("n", "<leader>E", "<cmd>Telescope file_browser path=. select_buffer=true<cr>", keymap_options)
 vim.keymap.set("n", "<leader>f", function()
   local opts = {}
   vim.fn.system('git rev-parse --is-inside-work-tree')

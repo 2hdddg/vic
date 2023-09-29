@@ -187,7 +187,7 @@ colors:
   # Cursor colors
   cursor:
     text:   '#1c1b19'
-    cursor: '#fbb829'
+    cursor: '#519f50'
 
   # Normal colors
   normal:
@@ -411,7 +411,7 @@ cursor:
     #   - Off: Disable blinking by default
     #   - On: Enable blinking by default
     #   - Always: Force the cursor to always blink
-    blinking: On
+    blinking: Always
 
   # Vi mode cursor style
   #
@@ -422,7 +422,7 @@ cursor:
   vi_mode_style: Block
 
   # Cursor blinking interval in milliseconds.
-  blink_interval: 350
+  blink_interval: 250
 
   # If this is `true`, the cursor will be rendered as a hollow box when the
   # window is not focused.
@@ -430,7 +430,7 @@ cursor:
 
   # Thickness of the cursor relative to the cell width as floating point number
   # from `0.0` to `1.0`.
-  #thickness: 0.15
+  thickness: 1.0
 
 # Live config reload (changes require restart)
 #live_config_reload: true

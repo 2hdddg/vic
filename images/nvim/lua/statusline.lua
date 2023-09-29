@@ -72,7 +72,15 @@ local theme = {
     x = {bg = colors.xgray6, fg = colors.black},
     y = {bg = colors.xgray6, fg = colors.black},
     z = {bg = colors.xgray6, fg = colors.black},
-  }
+  },
+  inactive_sections = {
+    lualine_a = {'filename'},
+    lualine_b = {},
+    lualine_c = {},
+    lualine_x = {{'diagnostics', sources = {'nvim_diagnostic'}}},
+    lualine_y = {'progress'},
+    lualine_z = {'location'},
+  },
 }
 require'lualine'.setup {
   options = {

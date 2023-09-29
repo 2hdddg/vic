@@ -8,6 +8,8 @@ cmp.setup({
     mapping = {
           ['<C-k>'] = cmp.mapping.select_prev_item(),
           ['<C-j>'] = cmp.mapping.select_next_item(),
+          ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-d>'] = cmp.mapping.scroll_docs(4),
           -- select = false -> Need to select something
           ['<CR>'] = cmp.mapping.confirm({select = false}),
           ['<TAB>'] = cmp.mapping.select_next_item(),
