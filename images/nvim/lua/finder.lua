@@ -1,6 +1,5 @@
 local telescope = require'telescope'
 local actions = require'telescope.actions'
-local fb_actions = require "telescope._extensions.file_browser.actions"
 telescope.setup{
   defaults = {
     layout_strategy = 'bottom_pane',
@@ -28,4 +27,3 @@ telescope.setup{
   },
 }
 telescope.load_extension('fzf')
-telescope.load_extension('file_browser')

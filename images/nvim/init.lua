@@ -27,8 +27,8 @@ vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.showmatch = true -- Highlight matching brackets
 vim.opt.matchtime = 1
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+--vim.g.loaded_netrw = 1
+--vim.g.loaded_netrwPlugin = 1
 -- Set leader before any plugins
 vim.g.mapleader = " "
 vim.lsp.set_log_level("off")
@@ -78,7 +78,8 @@ local plugins = {
     -- Toggle terminal
     '2hdddg/toggleTerm.nvim',
     -- File explorer
-    'nvim-telescope/telescope-file-browser.nvim',
+    { 'nvim-neo-tree/neo-tree.nvim', branch = 'v3.x' },
+    'MunifTanjim/nui.nvim' -- Needed by neo-tree
 }
 
 -- Bootstrap plugin manager
@@ -98,7 +99,6 @@ if install_plugins then
     paq.install()
     -- Wait for install to complete before proceeding to quit
     vim.cmd('autocmd User PaqDoneInstall quit')
-    --vim.api.nvim_create_autocmd({"User"
     -- Can not continue to setup plugins here since they are being installed async
     return
 end
@@ -134,8 +134,8 @@ set_keymap("n", "<leader>c", "<cmd>lua require('telescope.builtin').git_bcommits
 set_keymap("n", "<leader>C", "<cmd>lua require('telescope.builtin').git_commits()<cr>", keymap_options)
 set_keymap("n", "<leader>d", "<cmd>Telescope diagnostics bufnr=0<cr>", keymap_options)                          -- Show diagnostics for current buffer
 set_keymap("n", "<leader>D", "<cmd>Telescope diagnostics<cr>", keymap_options)                                  -- Show all diagnostics
-set_keymap("n", "<leader>e", "<cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>", keymap_options)
-set_keymap("n", "<leader>E", "<cmd>Telescope file_browser path=. select_buffer=true<cr>", keymap_options)
+set_keymap("n", "<leader>e", "<cmd>Neotree position=current reveal=true<cr>", keymap_options)
+set_keymap("n", "<leader>E", "<cmd>Neotree position=current<cr>", keymap_options)
 vim.keymap.set("n", "<leader>f", function()
   local opts = {}
   vim.fn.system('git rev-parse --is-inside-work-tree')
@@ -220,3 +220,47 @@ vim.cmd[[smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'    
 vim.cmd[[imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>']]
 vim.cmd[[smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>']]
 
+-- Neo-tree
+require('neo-tree').setup({
+    window = {
+        -- Disable a bunch of key mappings. Especially those related to
+        -- fuzzy find. Prefer to use / for buffer like search and use
+        -- telescope for fuzzy find instead.
+        mappings = {
+            ["/"] = "noop",
+            ["D"] = "noop",
+            ["#"] = "noop",
+            ["<"] = "noop",
+            [">"] = "noop",
+            ["w"] = "noop",
+            ["t"] = "noop",
+            ["C"] = "noop",
+            ["<left>"] = "close_node",
+            ["<right>"] = "open",
+        },
+    },
+    popup_border_style = "rounded",
+    enable_git_status = false,
+    default_component_configs = {
+        indent = {
+            indent_size = 4,
+            with_markers = false,
+        },
+        symlink_target = {
+            enabled = true,
+        },
+    },
+    filesystem = {
+        filtered_items = {
+            visible = true,
+        },
+    },
+    event_handlers = {
+        {
+            event = "neo_tree_buffer_enter",
+            handler = function(arg)
+                vim.cmd("setlocal relativenumber")
+            end,
+        },
+    },
+})
